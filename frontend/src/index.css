@@ -55,6 +55,10 @@ body {
   font-family: "Montserrat", sans-serif;
 }
 
+html {
+  scroll-behavior: smooth;
+}
+
 #root {
   text-align: center;
   min-height: 100svh;

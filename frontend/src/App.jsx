@@ -4,6 +4,7 @@ import footer from './assets/footer.png'
 import cta from './assets/cta.svg'
 import cardBg from './assets/card-map-bg.png'
 import mapBg from './assets/bg-map.png'
+import up from './assets/up.svg'
 import './App.css'
 
 function App() {
@@ -12,6 +13,9 @@ function App() {
     <>
       <Header />
       <About />
+      <Mission />
+
+      <Footer />
     </>
   )
 }
@@ -26,8 +30,8 @@ function Header() {
               <div className="menu-controls">
                 <ul className="menu">
                   <li><a href="#">Home</a></li>
-                  <li><a href="#">About</a></li>
-                  <li><a href="#">Mission</a></li>
+                  <li><a href="#abt">About</a></li>
+                  <li><a href="#mission">Mission</a></li>
                 </ul>
                 <a href="#" className="cta">Try
                   <img src={cta} alt="redirect" />
@@ -56,7 +60,7 @@ function Header() {
 function About() {
   return(
     <>
-    <div className="abt-wrapper">
+    <div className="abt-wrapper" id='abt'>
       <div className="container">
         <div className="abt-top">
           <img src={logo} alt="logo" />
@@ -76,6 +80,81 @@ function About() {
         </div>
       </div>
     </div>
+    </>
+  );
+}
+
+function Mission() {
+  return(
+    <>
+      <div className="mission-wrapper" id='mission'>
+        <div className="container">
+          <div className="mission-text">
+            <div className="mission-title">
+              <p>Why It Matters</p>
+              <h1>Beyond the Map: Why We Exist</h1>
+            </div>
+
+            <div className="mission-desc">
+              <p>Urban environments were rarely built with everyone in mind. For many, a single set of stairs or a missing ramp isn't just an inconvenience—it’s a wall that stops a journey. We believe that technology should serve as a bridge, turning "impassable" into "possible" by providing the most granular accessibility data ever recorded.</p>
+              <p>Our goal is to eliminate the anxiety of the unknown. By mapping the world’s micro-barriers, we empower individuals to reclaim their cities. We aren't just building a navigation tool; we are fostering a more inclusive society where mobility is seamless, predictable, and, above all, dignified for everyone.</p>
+            </div>
+          </div>
+
+          <div className="mission-cards-wrap">
+            <div className="mission-card">
+              <p className="mission-num">#01</p>
+              <div className="mission-card-text">
+                <h3>Invisible Barriers</h3>
+                <p>Traditional maps ignore real-world friction — stairs, curbs, broken paths. We surface what others leave unseen.</p>
+              </div>
+            </div>
+            <div className="mission-card">
+              <p className="mission-num">#02</p>
+              <div className="mission-card-text">
+                <h3>Human-Centered Design</h3>
+                <p>Navigation should adapt to people — not the other way around. Every route is personalized, contextual, and aware.</p>
+              </div>
+            </div>
+            <div className="mission-card">
+              <p className="mission-num">#03</p>
+              <div className="mission-card-text">
+                <h3>Dignity in Motion</h3>
+                <p>Independence isn't a feature — it's a right. We design for confidence, safety, and autonomy.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </>
+  );
+}
+
+function Footer() {
+  return(
+    <>
+      <div className="footer-wrapper">
+        <div className="container">
+          <div className="footer-top">
+            <div className="footer-offer">
+              <p>Your <span>city</span>, finally <span>unlocked</span></p>
+            </div>
+            <div className="footer-offer-right">
+              <p>Start your barrier-free journey today.</p>
+              <a href="#" className="cta">Launch Application
+                  <img src={cta} alt="redirect" />
+                </a>
+            </div>
+          </div>
+
+          <h1 className="banner">MOBIMPAI</h1>
+
+          <div className="footer-bottom">
+            <p>© 2026 MobImpAI. All rights reserved.</p>
+            <a href="#"><img src={up} alt="go_up" /></a>
+          </div>
+        </div>
+      </div>
     </>
   );
 }
