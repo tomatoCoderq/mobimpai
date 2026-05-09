@@ -227,7 +227,7 @@
 }
 
 .mission-title p {
-  color: #fa692a;
+  color: #fa2a53;
   font-weight: 600;
   font-size: 24px;
   margin-bottom: 24px;
@@ -275,7 +275,7 @@
   background-color: rgba(33, 33, 33, 0.7);
   border: 1px solid rgba(217, 217, 217, 0.26);
   width: 264px;
-  box-shadow: 0 10px 20px 0 rgba(250, 105, 42, 0.2);
+  box-shadow: 0 10px 20px 0 rgba(250, 42, 83, 0.2);
   display: flex;
   align-items: flex-start;
   flex-direction: column;
@@ -284,7 +284,7 @@
 
 .mission-num {
   font-weight: 700;
-  color: #fa692a;
+  color: #fa2a53;
   font-size: 16px;
   margin-bottom: 11px;
 }
