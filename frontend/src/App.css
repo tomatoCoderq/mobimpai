@@ -116,3 +116,43 @@
   flex-direction: column;
   align-items: flex-start;
 }
+
+.features-wrapper {
+  margin-top: 198px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.num p {
+  font-weight: 700;
+  font-size: 20px;
+  color: #fff;
+}
+
+.num span {
+  color: #fa692a;
+  font-style: italic;
+  font-size: 24px;
+  font-weight: 700;
+  margin-right: 2px;
+}
+
+.num {
+  display: flex;
+  align-items: center;
+}
+
+.feature-name {
+  font-weight: 300;
+  color: #fff;
+  font-size: 20px;
+}
+
+.feature {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  align-items: flex-start;
+}
+

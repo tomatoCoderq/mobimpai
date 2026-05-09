@@ -44,9 +44,44 @@ function Header() {
                 <p>Redefining urban mobility with high-precision routing that sees what others miss.</p>
               </div>
             </div>
+            <Features />
+
           </div>
         </div>
       </>
+  );
+}
+
+function Features() {
+  return(
+    <>
+    <div className="features-wrapper">
+              <div className="feature">
+                <div className="num">
+                  <p><span>#</span>01</p>
+                </div>
+                <h4 className="feature-name">Barrier-Free Routing</h4>
+              </div>
+              <div className="feature">
+                <div className="num">
+                  <p><span>#</span>02</p>
+                </div>
+                <h4 className="feature-name">Curb-Level Detail</h4>
+              </div>
+              <div className="feature">
+                <div className="num">
+                  <p><span>#</span>03</p>
+                </div>
+                <h4 className="feature-name">Live Elevator Status</h4>
+              </div>
+              <div className="feature">
+                <div className="num">
+                  <p><span>#</span>04</p>
+                </div>
+                <h4 className="feature-name">Personalized Mobility</h4>
+              </div>
+            </div>
+    </>
   );
 }
 
