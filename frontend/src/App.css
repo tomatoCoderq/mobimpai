@@ -69,7 +69,7 @@
   margin-top: 226px;
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  gap: 26px;
 }
 
 .offer-left h4 {
@@ -85,6 +85,7 @@
   font-size: 128px;
   width: fit-content;
   line-height: 153px;
+  margin-left: -11px;
 }
 
 .offer-left {
@@ -96,14 +97,14 @@
 
 .offer-right h3 {
   font-weight: 700;
-  font-size: 24px;
+  font-size: 22px;
   color: #fff;
   width: 453px;
 }
 
 .offer-right p {
   font-weight: 400;
-  font-size: 15px;
+  font-size: 13px;
   color: #fff;
   line-height: 140%;
   width: 446px;
@@ -156,3 +157,59 @@
   align-items: flex-start;
 }
 
+.abt-wrapper {
+  background: url("./assets/bg-map.png") no-repeat center top / cover;
+  padding-top: 60px;
+}
+
+.abt-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.abt-para h3 {
+  font-weight: 700;
+  font-size: 24px;
+  color: #fff;
+  width: 455px;
+  text-align: left;
+}
+
+.abt-para p {
+  font-weight: 400;
+  font-size: 15px;
+  color: #fff;
+  line-height: 140%;
+  text-align: left;
+  width: 455px;
+}
+
+.abt-para {
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+  align-items: flex-start;
+  margin-top: 266px;
+  margin-left: 705px;
+}
+
+.abt-offer p {
+  font-weight: 600;
+  color: #fff;
+  font-size: 24px;
+  margin-bottom: 10px;
+}
+
+.abt-offer h1 {
+  font-weight: 700;
+  font-size: 128px;
+  line-height: 153%;
+  color: #fff;
+}
+.abt-offer {
+  display: flex;
+  align-items: flex-start;
+  flex-direction: column;
+  margin-top: 46px;
+}

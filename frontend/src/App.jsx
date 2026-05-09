@@ -11,6 +11,7 @@ function App() {
   return (
     <>
       <Header />
+      <About />
     </>
   )
 }
@@ -49,6 +50,33 @@ function Header() {
           </div>
         </div>
       </>
+  );
+}
+
+function About() {
+  return(
+    <>
+    <div className="abt-wrapper">
+      <div className="container">
+        <div className="abt-top">
+          <img src={logo} alt="logo" />
+          <a href="#" className="cta">Try
+            <img src={cta} alt="redirect" />
+          </a>
+        </div>
+
+        <div className="abt-para">
+          <h3>Engineering Dignity into Every Journey.</h3>
+          <p>Accessibility is not a luxury; it is a fundamental human right. A city truly thrives only when every citizen can navigate its streets with independence and grace</p>
+        </div>
+
+        <div className="abt-offer">
+          <p>Social Impact & Trust</p>
+          <h1>About.</h1>
+        </div>
+      </div>
+    </div>
+    </>
   );
 }
 
