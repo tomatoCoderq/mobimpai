@@ -27,7 +27,7 @@ function Header() {
         <div className="header-wrapper">
           <div className="container">
             <div className="menu-top">
-              <img src={logo} alt="logo" />
+              <a href="#"><img src={logo} alt="logo" /></a>
               <div className="menu-controls">
                 <ul className="menu">
                   <li><a href="#">Home</a></li>
@@ -64,7 +64,7 @@ function About() {
     <div className="abt-wrapper" id='abt'>
       <div className="container">
         <div className="abt-top">
-          <img src={logo} alt="logo" />
+          <a href="#"><img src={logo} alt="logo" /></a>
           <a href="#" className="cta">Try
             <img src={cta} alt="redirect" />
           </a>

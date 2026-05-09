@@ -388,7 +388,7 @@
 }
 
 .exp-wrapper {
-  background: #000;
+  background: url("./assets/exp-bg.png") no-repeat center top / cover;
   padding-top: 60px;
 }
 
