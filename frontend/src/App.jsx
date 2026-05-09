@@ -14,6 +14,7 @@ function App() {
       <Header />
       <About />
       <Mission />
+      <Experience />
 
       <Footer />
     </>
@@ -42,7 +43,7 @@ function Header() {
             <div className="offer-wrapper">
               <div className="offer-left">
                 <h4>The City.</h4>
-                <h1>Unclocked.</h1>
+                <h1>Unlocked.</h1>
               </div>
               <div className="offer-right">
                 <h3>Navigation designed for every curb, every step, and every journey.</h3>
@@ -130,6 +131,25 @@ function Mission() {
   );
 }
 
+function Experience() {
+  return(
+    <>
+      <div className="exp-wrapper">
+        <div className="container">
+          <h4 className="exp-subtitle">Product Experience</h4>
+          <div className="exp-text-block">
+            <h2 className="exp-title">Excellence in Every Pixel.</h2>
+            <p className="exp-text">Explore a seamless interface designed for ultimate clarity. Witness how complex urban data transforms into an elegant, intuitive guide tailored for your world.</p>
+            <a href="#" className="cta">Launch Application
+              <img src={cta} alt="redirect" />
+            </a>
+          </div>
+        </div>
+      </div>
+    </>
+  );
+}
+
 function Footer() {
   return(
     <>
@@ -143,7 +163,7 @@ function Footer() {
               <p>Start your barrier-free journey today.</p>
               <a href="#" className="cta">Launch Application
                   <img src={cta} alt="redirect" />
-                </a>
+              </a>
             </div>
           </div>
 
