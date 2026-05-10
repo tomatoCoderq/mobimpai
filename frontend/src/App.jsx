@@ -6,6 +6,7 @@ import cta from './assets/cta.svg'
 import cardBg from './assets/card-map-bg.png'
 import mapBg from './assets/bg-map.png'
 import up from './assets/up.svg'
+import sliderBtn from './assets/slider-btn.svg'
 import './App.css'
 
 function App() {
@@ -15,6 +16,7 @@ function App() {
       <Header />
       <About />
       <Mission />
+      <Process />
       <Experience />
 
       <Footer />
@@ -131,6 +133,52 @@ function Mission() {
     </>
   );
 }
+
+function Process() {
+  return(
+    <>
+      <div className="process-wrapper">
+        <div className="container">
+          <h4 className="process-sec-subtitle">The Process</h4>
+          <h1 className="process-sec-title">Seamless Mobility in Three Steps</h1>``
+        </div>
+
+        <div className="slider-wrapper">
+          <div className="slider-controls">
+            <img className="btn-left btn-disabled" src={sliderBtn} alt="slider left" />
+            <img src={sliderBtn} alt="slider right" />
+          </div>
+
+          <div className="slider">
+            <div className="slider-card slider-card-selected">
+              <div className="slider-card-content">
+                <h3 className="slider-card-title">Define Your Needs</h3>
+                <p className="slider-card-text">Select your mobility profile — from wheelchair dimensions to preferred surface types.</p>
+                <p className="slider-card-num">01</p>
+              </div>
+            </div>
+            <div className="slider-card">
+              <div className="slider-card-content">
+                <h3 className="slider-card-title">AI-Powered Analysis</h3>
+                <p className="slider-card-text">Our engine scans billions of data points, including curb heights, ramp inclines, and live elevator status.</p>
+                <p className="slider-card-num slider-two-three">02</p>
+              </div>
+            </div>
+            <div className="slider-card">
+              <div className="slider-card-content">
+                <h3 className="slider-card-title">Navigate with Confidence</h3>
+                <p className="slider-card-text">Receive a high-precision, barrier-free route with real-time alerts on urban obstacles.</p>
+                <p className="slider-card-num slider-two-three">03</p>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+      </div>
+    </>
+  );
+}
+
 
 // function Experience() {
 //   return(
@@ -321,7 +369,7 @@ function Experience() {
 
   return (
     <div className="exp-wrapper">
-      <div className="container" ref={containerRef}>
+      <div className="container-exp" ref={containerRef}>
         <h4 className="exp-subtitle">Product Experience</h4>
         <div className="exp-text-block">
           <h2 className="exp-title">Excellence in Every Pixel.</h2>
