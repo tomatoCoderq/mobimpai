@@ -1,3 +1,4 @@
+import React, { useState, useEffect, useRef } from 'react';
 import logo from './assets/MobImpAI.svg'
 import main from './assets/main.png'
 import footer from './assets/footer.png'
@@ -131,22 +132,235 @@ function Mission() {
   );
 }
 
+// function Experience() {
+//   return(
+//     <>
+//       <div className="exp-wrapper">
+//         <div className="container">
+//           <h4 className="exp-subtitle">Product Experience</h4>
+//           <div className="exp-text-block">
+//             <h2 className="exp-title">Excellence in Every Pixel.</h2>
+//             <p className="exp-text">Explore a seamless interface designed for ultimate clarity. Witness how complex urban data transforms into an elegant, intuitive guide tailored for your world.</p>
+//             <a href="#" className="cta">Launch Application
+//               <img src={cta} alt="redirect" />
+//             </a>
+
+//             {/* Вот тут карусель */}
+//           </div>
+//         </div>
+//       </div>
+//     </>
+//   );
+// }
+
+// function Experience() {
+//   const photos = [
+//     cardBg,
+//     cardBg,
+//   ];
+
+//   // Дублируем фото для бесконечного эффекта
+//   const carouselItems = [...photos, ...photos];
+
+//   return(
+//     <>
+//       <div className="exp-wrapper">
+//         <div className="container">
+//           <h4 className="exp-subtitle">Product Experience</h4>
+//           <div className="exp-text-block">
+//             <h2 className="exp-title">Excellence in Every Pixel.</h2>
+//             <p className="exp-text">Explore a seamless interface designed for ultimate clarity. Witness how complex urban data transforms into an elegant, intuitive guide tailored for your world.</p>
+//             <a href="#" className="cta">Launch Application
+//               <img src={cta} alt="redirect" />
+//             </a>
+
+//             {/* Карусель */}
+//             <div className="carousel-container">
+//               <div className="carousel-track">
+//                 {carouselItems.map((photo, index) => (
+//                   <div key={index} className="carousel-item">
+//                     <img src={photo} alt={`Gallery ${index}`} />
+//                   </div>
+//                 ))}
+//               </div>
+//             </div>
+//           </div>
+//         </div>
+//       </div>
+//     </>
+//   );
+// }
+
+// function Experience() {
+//   // Для хорошего 3D цилиндра нужно достаточное количество элементов (например, 8)
+//   const photos = [
+//     cardBg, cardBg, cardBg, cardBg, cardBg, cardBg, cardBg, cardBg 
+//   ];
+  
+//   const totalItems = photos.length;
+
+//   return (
+//     <div className="exp-wrapper">
+//       <div className="container">
+//         <h4 className="exp-subtitle">Product Experience</h4>
+//         <div className="exp-text-block">
+//           <h2 className="exp-title">Excellence in Every Pixel.</h2>
+//           <p className="exp-text">
+//             Explore a seamless interface designed for ultimate clarity. Witness how complex urban data transforms into an elegant, intuitive guide tailored for your world.
+//           </p>
+//           <a href="#" className="cta">Launch Application
+//             <img src={cta} alt="redirect" />
+//           </a>
+
+//           {/* Карусель */}
+//           <div className="carousel-container">
+//             <div 
+//               className="carousel-track" 
+//               style={{ '--total': totalItems }} // Передаем общее количество в CSS
+//             >
+//               {photos.map((photo, index) => (
+//                 <div 
+//                   key={index} 
+//                   className="carousel-item"
+//                   style={{ '--index': index }} // Передаем индекс карточки в CSS
+//                 >
+//                   <img src={photo} alt={`Gallery ${index}`} />
+//                 </div>
+//               ))}
+//             </div>
+//           </div>
+//         </div>
+//       </div>
+//     </div>
+//   );
+// }
+
 function Experience() {
-  return(
-    <>
-      <div className="exp-wrapper">
-        <div className="container">
-          <h4 className="exp-subtitle">Product Experience</h4>
-          <div className="exp-text-block">
-            <h2 className="exp-title">Excellence in Every Pixel.</h2>
-            <p className="exp-text">Explore a seamless interface designed for ultimate clarity. Witness how complex urban data transforms into an elegant, intuitive guide tailored for your world.</p>
-            <a href="#" className="cta">Launch Application
-              <img src={cta} alt="redirect" />
-            </a>
+  // Ваш список фотографий. Для хорошего эффекта нужно не менее 6-8 карточек.
+  // Я использую ваш `cardBg` для примера.
+  const photos = Array(8).fill(cardBg); // Пример: 8 карточек
+  // Дублируем фото для бесконечного эффекта
+  const carouselItems = [...photos, ...photos];
+
+  const trackRef = useRef(null);
+  const containerRef = useRef(null);
+  const [scrollOffset, setScrollOffset] = useState(0);
+  const [containerWidth, setContainerWidth] = useState(0);
+
+  const itemWidth = 300; // Ширина одной карточки
+  const itemGap = 20; // Расстояние между карточками
+
+  useEffect(() => {
+    // Получаем ширину контейнера
+    if (containerRef.current) {
+      setContainerWidth(containerRef.current.offsetWidth);
+    }
+    // Обработка изменения размера окна
+    const handleResize = () => {
+      if (containerRef.current) {
+        setContainerWidth(containerRef.current.offsetWidth);
+      }
+    };
+    window.addEventListener('resize', handleResize);
+
+    let lastTime = 0;
+    const animate = (time) => {
+      const delta = lastTime === 0 ? 0 : time - lastTime;
+      lastTime = time;
+
+      // Управление скоростью прокрутки (0.1 - медленно, 0.5 - быстро)
+      const speed = 0.1;
+      setScrollOffset(prev => {
+        let nextOffset = prev + delta * speed;
+        const fullTrackWidth = (photos.length) * (itemWidth + itemGap);
+
+        // Бесшовный сброс для бесконечного эффекта
+        if (nextOffset >= fullTrackWidth) {
+          nextOffset %= fullTrackWidth;
+        }
+        return nextOffset;
+      });
+
+      requestAnimationFrame(animate);
+    };
+
+    const animationFrameId = requestAnimationFrame(animate);
+
+    return () => {
+      cancelAnimationFrame(animationFrameId);
+      window.removeEventListener('resize', handleResize);
+    };
+  }, []);
+
+  // Функция для динамического расчета 3D-трансформации каждой карточки
+  const getCardTransform = (index) => {
+    // Позиция центра карточки относительно начала трека
+    const cardCenterOnTrack = index * (itemWidth + itemGap) + itemWidth / 2;
+    // Позиция центра карточки относительно видимого контейнера
+    const cardXPos = cardCenterOnTrack - scrollOffset;
+
+    // Расстояние от центра видимого контейнера
+    const distFromCenter = cardXPos - containerWidth / 2;
+
+    // ФОРМУЛА ДЛЯ ВОГНУТОГО ЭФФЕКТА:
+    // translateZ: max negative value at center (far), less negative on edges (closer)
+    const baseZ = -300; // Насколько далеко центр в глубину (чем больше минус, тем глубже)
+    const zScale = 0.5; // Скорость удаления к краям (чем больше, тем сильнее изгиб)
+    const translateZ = baseZ + -Math.abs(distFromCenter) * zScale;
+
+    // rotateY: наклон карточек к краям (влево - минус, вправо - плюс)
+    const rotateScale = 0.1; // Насколько сильно карточки поворачиваются
+    const rotateY = distFromCenter * rotateScale;
+
+    // Ограничиваем вращение, чтобы карточки не «выворачивались»
+    const maxRotation = 45;
+    const boundedRotateY = Math.max(-maxRotation, Math.min(maxRotation, rotateY));
+
+    return `translate3d(${cardXPos - itemWidth/2}px, 0px, ${translateZ}px) rotateY(${boundedRotateY}deg)`;
+  };
+
+  return (
+    <div className="exp-wrapper">
+      <div className="container" ref={containerRef}>
+        <h4 className="exp-subtitle">Product Experience</h4>
+        <div className="exp-text-block">
+          <h2 className="exp-title">Excellence in Every Pixel.</h2>
+          <p className="exp-text">
+            Explore a seamless interface designed for ultimate clarity. Witness how complex urban data transforms into an elegant, intuitive guide tailored for your world.
+          </p>
+
+          {/* Ваша CTA ссылка, которую мы стилизуем */}
+          <a href="#" className="cta-button">
+            Launch Application
+            <img src={cta} alt="redirect" />
+          </a>
+
+          {/* Карусель */}
+          <div className="carousel-container">
+            {/* Градиентная маска по краям */}
+            <div className="carousel-mask"></div>
+
+            <div className="carousel-track" ref={trackRef}>
+              {carouselItems.map((photo, index) => (
+                <div
+                  key={index}
+                  className="carousel-item"
+                  style={{
+                    transform: getCardTransform(index),
+                    width: `${itemWidth}px`,
+                    height: '400px',
+                    position: 'absolute', // Абсолютное позиционирование для ручного размещения
+                    left: '0', // Всё размещение идет через transform в getCardTransform
+                  }}
+                >
+                  <img src={photo} alt={`Gallery ${index}`} />
+                </div>
+              ))}
+            </div>
           </div>
         </div>
       </div>
-    </>
+    </div>
   );
 }
 

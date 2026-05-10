@@ -270,16 +270,49 @@
 }
 
 .mission-card {
+  position: relative;
+  overflow: hidden;
+  
   padding: 22px 14px 17px 20px;
   border-radius: 12px;
-  background-color: rgba(33, 33, 33, 0.7);
+  background-color: #212121;
   border: 1px solid rgba(217, 217, 217, 0.26);
   width: 264px;
   box-shadow: 0 10px 20px 0 rgba(250, 42, 83, 0.2);
   display: flex;
   align-items: flex-start;
   flex-direction: column;
-  transition: 0.4s ease-in-out;
+  height: 122px;
+  transition: 0.5s ease-in-out;
+}
+
+.mission-card::before {
+  content: '';
+  position: absolute;
+  inset: 0; 
+  z-index: 0;
+   
+  background: radial-gradient(circle at top left, #FA2A53, #212121 65%);
+  
+  opacity: 0;
+  transition: opacity 0.5s ease-in-out;
+}
+
+.mission-card > * {
+  position: relative;
+  z-index: 1;
+}
+
+.mission-card:hover::before {
+  opacity: 1;
+}
+
+.mission-card:hover .mission-num {
+  color: #fff;
+}
+
+.mission-card:hover {
+  border: 1px solid rgba(250, 42, 83, 0.26);
 }
 
 .mission-num {
@@ -287,6 +320,7 @@
   color: #fa2a53;
   font-size: 16px;
   margin-bottom: 11px;
+  transition: 0.5s ease-in-out;
 }
 
 .mission-card-text h3 {
@@ -387,9 +421,31 @@
   align-items: center;
 }
 
+/* Ваши существующие стили */
 .exp-wrapper {
   background: url("./assets/exp-bg.png") no-repeat center top / cover;
   padding-top: 60px;
+  padding-bottom: 73px;
+  position: relative; /* Для наложения затемнения */
+}
+
+/* Добавим темное наложение, чтобы соответствовать референсу */
+.exp-wrapper::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.7); /* Сильное затемнение */
+  z-index: 1;
+}
+
+.container {
+  position: relative;
+  z-index: 2; /* Контент поверх затемнения */
+  max-width: 1200px; /* Фиксированная ширина контейнера */
+  margin: 0 auto;
 }
 
 .exp-subtitle {
@@ -397,6 +453,7 @@
   font-size: 24px;
   color: #fa692a;
   margin-bottom: 35px;
+  text-align: center;
 }
 
 .exp-title {
@@ -405,14 +462,16 @@
   font-size: 64px;
   width: 100%;
   margin-bottom: 57px;
+  text-align: center;
 }
 
 .exp-text {
   font-weight: 400;
   font-size: 24px;
   margin-bottom: 59px;
-  width: 975px;
-  color: rgba(255, 255, 255, 0.5);
+  max-width: 975px;
+  color: rgba(255, 255, 255, 0.6);
+  text-align: center;
 }
 
 .exp-text-block {
@@ -420,6 +479,104 @@
   flex-direction: column;
   align-items: center;
   margin-bottom: 73px;
+}
+
+/* Стилизация CTA ссылки */
+.cta-button {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background-color: transparent;
+  border: 2px solid rgba(255, 255, 255, 0.2);
+  color: #fff;
+  padding: 15px 30px;
+  border-radius: 50px;
+  font-size: 18px;
+  text-decoration: none;
+  font-weight: 600;
+  transition: all 0.3s ease;
+  margin-bottom: 60px; /* Отступ до карусели */
+}
+
+.cta-button:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+  border-color: rgba(255, 255, 255, 0.5);
+}
+
+.cta-button img {
+  width: 20px;
+  height: 20px;
+}
+
+/* Карусель */
+.carousel-container {
+  width: 100%;
+  max-width: 1200px;
+  height: 500px; /* Фиксированная высота */
+  overflow: hidden; /* Карточки уходят за край */
+  position: relative;
+  margin-top: 60px;
+  perspective: 2000px; /* Глубокая перспектива для вогнутости */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* Градиентная маска для плавного исчезновения по краям */
+.carousel-mask {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(to right, #000 0%, transparent 15%, transparent 85%, #000 100%);
+  z-index: 10;
+  pointer-events: none; /* Чтобы можно было кликать на карточки через маску */
+}
+
+.carousel-track {
+  width: 100%;
+  height: 400px;
+  position: relative;
+  transform-style: preserve-3d; /* Сохраняем 3D пространство */
+}
+
+.carousel-item {
+  position: absolute;
+  width: 300px;
+  height: 400px;
+  border-radius: 12px;
+  overflow: hidden;
+  transition: transform 0.1s linear; /* Плавное движение (синхронно с JS) */
+  backface-visibility: hidden; /* Скрываем заднюю сторону */
+}
+
+.carousel-item img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+/* Эффект при наведении на конкретное фото */
+.carousel-item:hover {
+  transform: translate3d(calc(50% - 150px), 0px, -270px) rotateY(0deg) scale(1.05); /* Немного ближе и ровно */
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6);
+  z-index: 100;
+  cursor: pointer;
+}
+
+/* Адаптивность */
+@media (max-width: 768px) {
+  .carousel-item {
+    width: 200px;
+    height: 280px;
+  }
+  
+  .carousel-track {
+    gap: 15px;
+    animation-duration: 90s;
+  }
 }
 
 @media (max-width: 575px) {
