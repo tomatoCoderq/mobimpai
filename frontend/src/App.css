@@ -624,6 +624,8 @@
   border-radius: 8px;
   background: url("./assets/card-map-bg.png") no-repeat center top / cover;
   border: 1px solid rgba(217, 217, 217, 0.26);
+  transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+  flex-shrink: 0;
 }
 
 .slider-card::before {
@@ -702,6 +704,15 @@
   display: flex;
   align-items: flex-end;
   gap: 55px;
+
+  /* добавил */
+  will-change: transform;
+}
+
+/* добавил */
+.slider-container {
+    overflow: hidden;
+    width: 100%;
 }
 
 /* Адаптивность */

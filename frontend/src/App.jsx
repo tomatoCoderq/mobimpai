@@ -134,48 +134,127 @@ function Mission() {
   );
 }
 
-function Process() {
-  return(
-    <>
-      <div className="process-wrapper">
-        <div className="container">
-          <h4 className="process-sec-subtitle">The Process</h4>
-          <h1 className="process-sec-title">Seamless Mobility in Three Steps</h1>``
-        </div>
+// function Process() {
+//   return(
+//     <>
+//       <div className="process-wrapper">
+//         <div className="container">
+//           <h4 className="process-sec-subtitle">The Process</h4>
+//           <h1 className="process-sec-title">Seamless Mobility in Three Steps</h1>``
+//         </div>
 
-        <div className="slider-wrapper">
-          <div className="slider-controls">
-            <img className="btn-left btn-disabled" src={sliderBtn} alt="slider left" />
-            <img src={sliderBtn} alt="slider right" />
-          </div>
+//         <div className="slider-wrapper">
+//           <div className="slider-controls">
+//             <img className="btn-left btn-disabled" src={sliderBtn} alt="slider left" />
+//             <img src={sliderBtn} alt="slider right" />
+//           </div>
 
-          <div className="slider">
-            <div className="slider-card slider-card-selected">
-              <div className="slider-card-content">
-                <h3 className="slider-card-title">Define Your Needs</h3>
-                <p className="slider-card-text">Select your mobility profile — from wheelchair dimensions to preferred surface types.</p>
-                <p className="slider-card-num">01</p>
-              </div>
-            </div>
-            <div className="slider-card">
-              <div className="slider-card-content">
-                <h3 className="slider-card-title">AI-Powered Analysis</h3>
-                <p className="slider-card-text">Our engine scans billions of data points, including curb heights, ramp inclines, and live elevator status.</p>
-                <p className="slider-card-num slider-two-three">02</p>
-              </div>
-            </div>
-            <div className="slider-card">
-              <div className="slider-card-content">
-                <h3 className="slider-card-title">Navigate with Confidence</h3>
-                <p className="slider-card-text">Receive a high-precision, barrier-free route with real-time alerts on urban obstacles.</p>
-                <p className="slider-card-num slider-two-three">03</p>
-              </div>
-            </div>
-          </div>
-        </div>
+//           <div className="slider">
+//             <div className="slider-card slider-card-selected">
+//               <div className="slider-card-content">
+//                 <h3 className="slider-card-title">Define Your Needs</h3>
+//                 <p className="slider-card-text">Select your mobility profile — from wheelchair dimensions to preferred surface types.</p>
+//                 <p className="slider-card-num">01</p>
+//               </div>
+//             </div>
+//             <div className="slider-card">
+//               <div className="slider-card-content">
+//                 <h3 className="slider-card-title">AI-Powered Analysis</h3>
+//                 <p className="slider-card-text">Our engine scans billions of data points, including curb heights, ramp inclines, and live elevator status.</p>
+//                 <p className="slider-card-num slider-two-three">02</p>
+//               </div>
+//             </div>
+//             <div className="slider-card">
+//               <div className="slider-card-content">
+//                 <h3 className="slider-card-title">Navigate with Confidence</h3>
+//                 <p className="slider-card-text">Receive a high-precision, barrier-free route with real-time alerts on urban obstacles.</p>
+//                 <p className="slider-card-num slider-two-three">03</p>
+//               </div>
+//             </div>
+//           </div>
+//         </div>
         
+//       </div>
+//     </>
+//   );
+// }
+
+function Process() {
+  // Состояние активного слайда (0, 1 или 2)
+  const [activeIndex, setActiveIndex] = useState(0);
+  const totalSlides = 3;
+
+  const handleNext = () => {
+    if (activeIndex < totalSlides - 1) {
+      setActiveIndex(prev => prev + 1);
+    }
+  };
+
+  const handlePrev = () => {
+    if (activeIndex > 0) {
+      setActiveIndex(prev => prev - 1);
+    }
+  };
+
+  // Вычисляем смещение для прокрутки (ширина карточки + gap)
+  // В CSS у вас ширина карточки ~381px-404px и gap 55px
+  const slideOffset = activeIndex === 2 ? (381 + 55) : 0;
+
+  return (
+    <div className="process-wrapper">
+      <div className="container">
+        <h4 className="process-sec-subtitle">The Process</h4>
+        <h1 className="process-sec-title">Seamless Mobility in Three Steps</h1>
       </div>
-    </>
+
+      <div className="slider-wrapper">
+        <div className="slider-controls">
+          <img 
+            className={`btn-left ${activeIndex === 0 ? 'btn-disabled' : ''}`} 
+            src={sliderBtn} 
+            alt="slider left" 
+            onClick={handlePrev}
+          />
+          <img 
+            className={`${activeIndex === totalSlides - 1 ? 'btn-disabled' : ''}`} 
+            src={sliderBtn} 
+            alt="slider right" 
+            onClick={handleNext}
+          />
+        </div>
+
+        <div className="slider-container">
+            <div 
+                className="slider" 
+                style={{ transform: `translateX(-${slideOffset}px)`, transition: 'transform 0.5s ease' }}
+            >
+                <div className={`slider-card ${activeIndex === 0 ? 'slider-card-selected' : ''}`}>
+                    <div className="slider-card-content">
+                        <h3 className="slider-card-title">Define Your Needs</h3>
+                        <p className="slider-card-text">Select your mobility profile — from wheelchair dimensions to preferred surface types.</p>
+                        <p className="slider-card-num">01</p>
+                    </div>
+                </div>
+
+                <div className={`slider-card ${activeIndex === 1 ? 'slider-card-selected' : ''}`}>
+                    <div className="slider-card-content">
+                        <h3 className="slider-card-title">AI-Powered Analysis</h3>
+                        <p className="slider-card-text">Our engine scans billions of data points, including curb heights, ramp inclines, and live elevator status.</p>
+                        <p className="slider-card-num slider-two-three">02</p>
+                    </div>
+                </div>
+
+                <div className={`slider-card ${activeIndex === 2 ? 'slider-card-selected' : ''}`}>
+                    <div className="slider-card-content">
+                        <h3 className="slider-card-title">Navigate with Confidence</h3>
+                        <p className="slider-card-text">Receive a high-precision, barrier-free route with real-time alerts on urban obstacles.</p>
+                        <p className="slider-card-num slider-two-three">03</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+      </div>
+    </div>
   );
 }
 
