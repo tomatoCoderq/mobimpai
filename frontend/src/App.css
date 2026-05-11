@@ -399,10 +399,11 @@
   text-transform: uppercase;
   color: #fff;
   font-weight: 900;
-  font-size: 330px;
+  font-size: clamp(280px, 20.625vw, 400px);
   margin-top: 150px;
   line-height: 402px;
-  display: flex;justify-content: center;
+  display: flex;
+  justify-content: center;
 }
 
 .footer-bottom p {
