@@ -14,21 +14,27 @@ import i5 from './assets/i5.avif'
 import i6 from './assets/i6.avif'
 import i7 from './assets/i7.avif'
 import i8 from './assets/i8.avif'
+import { Routes, Route, Link } from 'react-router-dom';
+import Nav from './Navigator';
 
 import './App.css'
 
 function App() {
 
   return (
-    <>
-      <Header />
-      <About />
-      <Mission />
-      <Process />
-      <Experience />
-
-      <Footer />
-    </>
+    <Routes>
+      <Route path="/" element={
+        <>
+          <Header />
+          <About />
+          <Mission />
+          <Process />
+          <Experience />
+          <Footer />
+        </>
+      } />
+      <Route path="/navigator" element={<Nav />} />
+    </Routes>
   )
 }
 
@@ -45,9 +51,10 @@ function Header() {
                   <li><a href="#abt">About</a></li>
                   <li><a href="#mission">Mission</a></li>
                 </ul>
-                <a href="#" className="cta">Try
+                <Link to="/navigator" className="cta">
+                  Try
                   <img src={cta} alt="redirect" />
-                </a>
+                </Link>
               </div>
             </div>
 
@@ -76,9 +83,9 @@ function About() {
       <div className="container">
         <div className="abt-top">
           <a href="#"><img src={logo} alt="logo" /></a>
-          <a href="#" className="cta">Try
+          <Link to="/navigator" className="cta">Try
             <img src={cta} alt="redirect" />
-          </a>
+          </Link>
         </div>
 
         <div className="abt-para">
@@ -297,10 +304,10 @@ function Experience() {
             Explore a seamless interface designed for ultimate clarity. Witness how complex urban data transforms into an elegant, intuitive guide tailored for your world.
           </p>
 
-          <a href="#" className="cta-button">
+          <Link to="/navigator" className="cta-button">
             Launch Application
             <img src={cta} alt="redirect" />
-          </a>
+          </Link>
 
           {/* Карусель */}
           <div className="carousel-container">
@@ -367,9 +374,9 @@ function Footer() {
             </div>
             <div className="footer-offer-right">
               <p>Start your barrier-free journey today.</p>
-              <a href="#" className="cta">Launch Application
+              <Link to="/navigator" className="cta">Launch Application
                   <img src={cta} alt="redirect" />
-              </a>
+              </Link>
             </div>
           </div>
 
