@@ -24,7 +24,7 @@ function Navigator() {
     const mapContainer = useRef(null);
 
     useEffect(() => {
-        mapboxgl.accessToken = process.env.REACT_APP_MAPBOX_TOKEN;
+        mapboxgl.accessToken = import.meta.env.VITE_MAPBOX_TOKEN;
 
         const map = new mapboxgl.Map({
             container: mapContainer.current,

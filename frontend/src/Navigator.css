@@ -49,7 +49,7 @@
     position: relative;
     z-index: 1;
     scrollbar-width: thin;
-    scrollbar-color: rgba(250, 105, 42, 0.85) #282828;
+    scrollbar-color: rgba(255, 255, 255, 0.3) #282828;
 }
 
 .nav-control-panel-scroll::-webkit-scrollbar {
