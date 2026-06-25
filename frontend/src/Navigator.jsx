@@ -1,7 +1,7 @@
 import './Navigator.css'
 import React, { useEffect, useMemo, useRef, useState } from 'react';
-import maplibregl from 'maplibre-gl';
-import 'maplibre-gl/dist/maplibre-gl.css';
+import mapboxgl from 'mapbox-gl';
+import 'mapbox-gl/dist/mapbox-gl.css';
 import logo from './assets/MobImpAI.svg'
 import mic from './assets/mic.svg'
 import magnifier from './assets/magnifier.svg'
@@ -19,6 +19,8 @@ import strollerColor from './assets/stroller-yellow.svg'
 import strollerWhite from './assets/stroller-white.svg'
 import wheelColor from './assets/wheelchair-blue.svg'
 import wheelWhite from './assets/wheelchair-white.svg'
+
+mapboxgl.accessToken = import.meta.env.VITE_MAPBOX_TOKEN;
 
 function Navigator() {
     const mapContainer = useRef(null);
@@ -41,26 +43,9 @@ function Navigator() {
     ), []);
 
     useEffect(() => {
-        const map = new maplibregl.Map({
+        const map = new mapboxgl.Map({
             container: mapContainer.current,
-            style: {
-                version: 8,
-                sources: {
-                    dark: {
-                        type: 'raster',
-                        tiles: ['https://cartodb-basemaps-a.global.ssl.fastly.net/dark_all/{z}/{x}/{y}.png'],
-                        tileSize: 256,
-                        attribution: '© OpenStreetMap contributors © CARTO'
-                    }
-                },
-                layers: [
-                    {
-                        id: 'dark',
-                        type: 'raster',
-                        source: 'dark'
-                    }
-                ]
-            },
+            style: 'mapbox://styles/seanshushickkk/cmopkyhso000401s7ebhj2wbo',
             center: [49.1221, 55.7887],
             zoom: 14.5,
             pitch: 60,
@@ -101,7 +86,7 @@ function Navigator() {
             return;
         }
         if (!startMarkerRef.current) {
-            startMarkerRef.current = new maplibregl.Marker({ color: '#2AA7FA' });
+            startMarkerRef.current = new mapboxgl.Marker({ color: '#2AA7FA' });
         }
         startMarkerRef.current.setLngLat(startCoord).addTo(mapRef.current);
     }, [startCoord]);
@@ -111,7 +96,7 @@ function Navigator() {
             return;
         }
         if (!endMarkerRef.current) {
-            endMarkerRef.current = new maplibregl.Marker({ color: '#FA692A' });
+            endMarkerRef.current = new mapboxgl.Marker({ color: '#FA692A' });
         }
         endMarkerRef.current.setLngLat(endCoord).addTo(mapRef.current);
     }, [endCoord]);
@@ -169,7 +154,7 @@ function Navigator() {
 
         const bounds = geojson.geometry.coordinates.reduce((acc, coord) => {
             return acc.extend(coord);
-        }, new maplibregl.LngLatBounds(geojson.geometry.coordinates[0], geojson.geometry.coordinates[0]));
+        }, new mapboxgl.LngLatBounds(geojson.geometry.coordinates[0], geojson.geometry.coordinates[0]));
         map.fitBounds(bounds, { padding: 80, maxZoom: 18 });
     };
 
