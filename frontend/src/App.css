@@ -753,4 +753,87 @@
       margin-left: 0;
       font-size: 60px;
     }
+
+    .offer-left h4 {
+      font-size: 16px;
+    }
+
+    .offer-right {
+      width: 100%;
+      margin-top: 40px;
+      line-height: 150%;
+    }
+
+    .offer-right h3 {
+      width: 100%;
+      font-size: 18px;
+      font-weight: 600;
+    }
+
+    .offer-right p {
+      width: 100%;
+      line-height: 150%;
+      font-size: 11px;
+    }
+
+    .num span {
+      font-size: 18px;
+    }
+
+    .num p {
+      font-size: 15px;
+    }
+
+    .feature-name {
+      width: 100px;
+      text-align: left;
+      font-size: 15px;
+    }
+
+    .features-wrapper {
+      overflow: hidden;
+      overflow-x: auto;
+      gap: 40px;
+      margin-top: 50px;
+
+      -webkit-overflow-scrolling: touch;
+      scrollbar-width: none;
+      -ms-overflow-style: none;
+    }
+
+    .features-wrapper::-webkit-scrollbar {
+      display: none;
+    }
+
+    .abt-para {
+      margin-top: 200px;
+      margin-left: 0;
+    }
+
+    .abt-offer p {
+      font-weight: 500;
+      font-size: 16px;
+    }
+
+    .abt-offer h1 {
+      width: 100%;
+      font-size: 78px;
+      text-align: left;
+    }
+
+    .abt-para h3 {
+      width: 100%;
+      font-size: 20px;
+      line-height: 150%;
+    }
+
+    .abt-para p {
+      width: 100%;
+      font-size: 13px;
+      line-height: 150%;
+    }
+
+    .abt-offer {
+      margin-top: 70px;
+    }
 }
