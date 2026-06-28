@@ -150,6 +150,20 @@ function Mission() {
 }
 
 function Process() {
+
+  const [isMobile, setIsMobile] = useState(window.innerWidth <= 575);
+
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth <= 575);
+    };
+
+    window.addEventListener("resize", handleResize);
+
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
+
   const [activeIndex, setActiveIndex] = useState(0);
   const totalSlides = 3;
 
@@ -165,7 +179,12 @@ function Process() {
     }
   };
 
-  const slideOffset = activeIndex === 2 ? (381 + 55) : 0;
+  // const slideOffset = activeIndex === 2 ? (381 + 55) : 0;
+  const slideOffset = isMobile
+  ? activeIndex * 254
+  : activeIndex === 2
+    ? 436 // 381 + 55
+    : 0;
 
   return (
     <div className="process-wrapper">
@@ -215,7 +234,7 @@ function Process() {
                     <div className="slider-card-content">
                         <h3 className="slider-card-title">Navigate with Confidence</h3>
                         <p className="slider-card-text">Receive a high-precision, barrier-free route with real-time alerts on urban obstacles.</p>
-                        <p className="slider-card-num slider-two-three">03</p>
+                        <p className="slider-card-num slider-two-three slider-three">03</p>
                     </div>
                 </div>
             </div>

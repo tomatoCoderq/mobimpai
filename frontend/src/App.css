@@ -806,7 +806,7 @@
     }
 
     .abt-para {
-      margin-top: 200px;
+      margin-top: 150px;
       margin-left: 0;
     }
 
@@ -835,5 +835,202 @@
 
     .abt-offer {
       margin-top: 70px;
+    }
+
+    .mission-title p {
+      font-size: 16px;
+    }
+
+    .mission-title h1 {
+      width: 100%;
+      font-size: 66px;
+    }
+
+    .mission-text {
+      flex-direction: column;
+    }
+
+    .mission-desc {
+      margin-top: 70px;
+      width: 100%;
+    }
+
+    .mission-desc p {
+      width: 100%;
+      line-height: 150%;
+      font-size: 13px;
+    }
+
+    .mission-cards-wrap {
+      margin-left: 0;
+      flex-direction: column;
+    }
+
+    .mission-card {
+      width: fit-content;
+      padding: 16px 14px 17px 15px;
+    }
+
+    .mission-num {
+      font-size: 13px;
+    }
+
+    .mission-card-text h3 {
+      width: 100%;
+      text-align: left;
+      font-size: 12px;
+    }
+
+    .mission-card-text p {
+      width: 100%;
+    }
+
+    .process-sec-subtitle {
+      font-size: 16px;
+    }
+
+    .process-sec-title {
+      width: 100%;
+      font-size: 60px;
+    }
+
+    .slider-wrapper {
+      margin-left: 15px;
+      flex-direction: column-reverse;
+      align-items: flex-start;
+    }
+
+    .slider-controls img {
+      width: 50px;
+    }
+
+    .slider-controls {
+      gap: 15px;
+    }
+
+    .slider-card {
+      width: 199px;
+      height: 320px;
+    }
+
+    .slider-card-content {
+      padding: 20px 20px 0 20px;
+    }
+
+    .slider-card-title {
+      font-size: 24px;
+    }
+
+    .slider-card-text {
+      font-size: 13px;
+    }
+
+    .slider-card-num {
+      margin-left: 20px;
+      margin-top: 10px;
+      font-size: 150px;
+      line-height: 150%;
+    }
+
+    .slider-three {
+      line-height: 120%;
+    }
+
+    .slider {
+      background: none;
+    }
+
+    .container-exp {
+      padding: 0 15px;
+    }
+
+    .exp-subtitle {
+      font-size: 16px;
+    }
+
+    .exp-text-block {
+      width: 100%;
+    }
+
+    .exp-title {
+      font-size: 50px;
+      margin-bottom: 35px;
+    }
+
+    .exp-text {
+      width: 100%;
+      font-size: 16px;
+    }
+
+    .cta-button {
+      font-size: 10px;
+      padding: 10px 30px;
+      margin-bottom: 0;
+    }
+
+    .carousel-container {
+      margin-top: 0;
+    }
+
+    .carousel-item {
+      width: 150px;
+      height: 200px;
+    }
+
+    .footer-top {
+      width: 100%;
+      flex-direction: column;
+      align-items: flex-start;
+    }
+
+    .footer-offer {
+      width: 100%;
+    }
+
+    .footer-offer p {
+      width: 100%;
+      font-size: 38px;
+    }
+
+    .footer-wrapper {
+      padding-top: 70px;
+    }
+
+    .footer-offer-right {
+      width: 100%;
+      margin-top: 40px;
+    }
+
+    .footer-offer-right p {
+      width: 100%;
+      font-size: 16px;
+    }
+
+    .cta {
+      padding: 7px 18px 6px 19px;
+      font-size: 13px;
+    }
+
+    .banner {
+      margin-top: 250px;
+      font-size: clamp(63px, 19.7vw, 113px);
+      line-height: 100%;
+    }
+
+    .footer-bottom {
+      flex-direction: column;
+    }
+
+    .footer-bottom a {
+      margin-left: 0;
+    }
+
+    .footer-bottom p {
+      width: 50%;
+      line-height: 200%;
+    }
+
+    .footer-bottom {
+      gap: 40px;
     }
 }
