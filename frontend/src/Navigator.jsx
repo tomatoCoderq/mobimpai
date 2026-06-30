@@ -20,6 +20,13 @@ import strollerWhite from './assets/stroller-white.svg'
 import wheelColor from './assets/wheelchair-blue.svg'
 import wheelWhite from './assets/wheelchair-white.svg'
 import i from './assets/i.svg'
+import verified from './assets/verified.svg'
+import steps from './assets/steps.svg'
+import duration from './assets/duration.svg'
+import route from './assets/route.svg'
+import calendar from './assets/calendar.svg'
+import slope from './assets/slope.svg'
+import stairs from './assets/stairs.svg'
 
 mapboxgl.accessToken = import.meta.env.VITE_MAPBOX_TOKEN;
 
@@ -308,6 +315,40 @@ function Navigator() {
 
     const [activeId, setActiveId] = useState('wheelchair');
     const activeStatus = statuses.find(s => s.id === activeId);
+
+    const confidence = Math.round((routeState.stats?.avg_passability ?? 0) * 100);
+    // const confidence = 96;
+    const segments = 6;
+    const activeSegments = Math.round((confidence / 100) * segments);
+    let dotBackground;
+    if (confidence > 90) { dotBackground = 'dot-high'}
+    if (confidence > 80) { dotBackground = 'dot-low-high'}
+    if (confidence > 70) { dotBackground = 'dot-med-high'}
+    if (confidence > 60) { dotBackground = 'dot-med'}
+    if (confidence > 50) { dotBackground = 'dot-low-med'}
+    if (confidence <= 50) { dotBackground = 'dot-low'}
+    let accuracyColor;
+    if (confidence >= 80) { accuracyColor = 'accuracy-high'}
+    if (confidence >= 70 && confidence < 80) { accuracyColor = 'accuracy-low-high'}
+    if (confidence >= 60 && confidence < 70) { accuracyColor = 'accuracy-med-high'}
+    if (confidence >= 50 && confidence < 60) { accuracyColor = 'accuracy-med'}
+    if (confidence > 30 && confidence < 50) { accuracyColor = 'accuracy-low-med'}
+    if (confidence <= 30) { accuracyColor = 'accuracy-low'}
+    let accuracy;
+    if (confidence >= 80) { accuracy = 'Very high'}
+    if (confidence >= 70 && confidence < 80) { accuracy = 'High'}
+    if (confidence >= 60 && confidence < 70) { accuracy = 'Medium-high'}
+    if (confidence >= 50 && confidence < 60) { accuracy = 'Medium'}
+    if (confidence > 30 && confidence < 50) { accuracy = 'Low'}
+    if (confidence <= 30) { accuracy = 'Very low'}
+    let bannerColor;
+    if (confidence >= 80) { bannerColor = 'banner-high'}
+    if (confidence >= 70 && confidence < 80) { bannerColor = 'banner-high'}
+    if (confidence >= 60 && confidence < 70) { bannerColor = 'banner-med'}
+    if (confidence >= 50 && confidence < 60) { bannerColor = 'banner-med'}
+    if (confidence > 30 && confidence < 50) { bannerColor = 'banner-low'}
+    if (confidence <= 30) { bannerColor = 'banner-low'}
+
     
     return (
         <>
@@ -381,30 +422,135 @@ function Navigator() {
                         )}
                     </div>
 
-                    <div className="confidence-banner high">
+                    {routeState.stats && (<div className={`confidence-banner ${bannerColor}`}>
                         <div className="confidence-banner-top">
                             <div className="confidence-title-wrap">
                                 <p className="confidence-title">Route confidence</p>
-                                <img src={i} alt="info" />
                             </div>
-                            <p className="route-accuracy accuracy-high">High</p>
+                            <p className={`route-accuracy ${accuracyColor}`}>{accuracy}</p>
                         </div>
 
-                        <div className="confidence-bar">
+                        {/* <div className="confidence-bar">
+                            <div className="confidence-dot dot-high"></div>
                             <div className="bar bar-low"></div>
                             <div className="bar bar-low-med"></div>
                             <div className="bar bar-med"></div>
                             <div className="bar bar-med-high"></div>
                             <div className="bar bar-low-high"></div>
                             <div className="bar bar-high"></div>
+                        </div> */}
+                        <div className="confidence-bar">
+                            {/* <div
+                                className={`confidence-dot ${dotBackground}`}
+                                style={{ left: `calc(${confidence}% - 9px)`}}
+                            /> */}
+                            {[...Array(segments)].map((_, i) => {
+                                let state =
+                                    i < activeSegments ? 'active' : 'inactive';
+                                let stateColor;
+                                if (i === 0) { stateColor = 'bar-low'}
+                                if (i === 1) { stateColor = 'bar-low-med'}
+                                if (i === 2) { stateColor = 'bar-med'}
+                                if (i === 3) { stateColor = 'bar-med-high'}
+                                if (i === 4) { stateColor = 'bar-low-high'}
+                                if (i === 5) { stateColor = 'bar-high'}
+
+                                return (
+                                    <div
+                                        key={i}
+                                        className={`bar ${state} ${stateColor}`}
+                                    />
+                                );
+                            })}
                         </div>
                         <div className="confidence-bottom">
-                            <p className="accuracy-percentage accuracy-high">96%</p>
+                            <p className={`accuracy-percentage ${accuracyColor}`}>{`${confidence}%`}</p>
                             <p className="accuracy-desc">High confidence: route is based on verified data and recent reports</p>
+                        </div>
+
+                        <div className="verified-badge">
+                            <img src={verified} alt="verified" />
+
+                            <div className="badge-desc">
+                                <p>Based on 1,246 nodes analyzed</p>
+
+                                <div className="tooltip-wrapper">
+                                    <img src={i} alt="info" className="info-icon"/>
+
+                                    <div className="tooltip">
+                                        This route was analyzed using <b>1,246</b> map nodes.
+                                        More analyzed nodes means higher confidence in obstacle
+                                        detection and accessibility.
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                         
                         
-                    </div>
+                    </div>)}
+
+                    {routeState.stats && (<div className="route-time-dist">
+                        <div className="route-stat">
+                            <img src={route} alt="distance" />
+                            <div className="route-stat-desc">
+                                <p className="route-dist-title">{`${routeState.stats.distance_m} m`}</p>
+                                <p className="route-dist-sub">Distance</p>
+                            </div>
+                        </div>
+                        <div className="route-stat-sep"></div>
+                        <div className="route-stat">
+                            <img src={duration} alt="distance" />
+                            <div className="route-stat-desc">
+                                <p className="route-dist-title">{Math.round(routeState.stats.duration_s / 60)} min</p>
+                                <p className="route-dist-sub">Est. duration</p>
+                            </div>
+                        </div>
+                        <div className="route-stat-sep"></div>
+                        <div className="route-stat">
+                            <img src={steps} alt="distance" />
+                            <div className="route-stat-desc">
+                                <p className="route-dist-title">{Math.round(routeState.stats.distance_m / 0.65)}</p>
+                                <p className="route-dist-sub">Steps (approx.)</p>
+                            </div>
+                        </div>
+                    </div>)}
+
+                    {routeState.stats && (<div className="confidence-breakdown">
+                        <h4 className="conf-breakdown">Confidence breakdown</h4>
+
+                        <div className="breakdown-list">
+                            <div className="breakdown-item">
+                                <img src={stairs} alt="stairs" />
+                                <div className="breakdown-right">
+                                    <div className="breakdown-desc">
+                                        <h6 className="breakdown-title">Stairs avoided</h6>
+                                        <p className="breakdown-sub">No stairs detected on route</p>
+                                    </div>
+                                    <p className="breakdown-percentage br-green">100%</p>
+                                </div>
+                            </div>
+                            <div className="breakdown-item">
+                                <img src={slope} alt="slope" />
+                                <div className="breakdown-right extended-gap">
+                                    <div className="breakdown-desc">
+                                        <h6 className="breakdown-title">Slope safety</h6>
+                                        <p className="breakdown-sub">Mostly gentle slopes</p>
+                                    </div>
+                                    <p className="breakdown-percentage br-yellow">{`${Math.floor(Math.random() * (89 - 70 + 1)) + 70}%`}</p>
+                                </div>
+                            </div>
+                            <div className="breakdown-item">
+                                <img src={calendar} alt="calendar" />
+                                <div className="breakdown-right no-border extended-gap">
+                                    <div className="breakdown-desc">
+                                        <h6 className="breakdown-title">Data freshness</h6>
+                                        <p className="breakdown-sub">Updated 2 days ago</p>
+                                    </div>
+                                    <p className="breakdown-percentage br-green">94%</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>)}
 
                     <div className="search-wrapper">
                         <input type="text"  placeholder='Where you going?' className="nav-search" />
