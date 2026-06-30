@@ -19,6 +19,7 @@ import strollerColor from './assets/stroller-yellow.svg'
 import strollerWhite from './assets/stroller-white.svg'
 import wheelColor from './assets/wheelchair-blue.svg'
 import wheelWhite from './assets/wheelchair-white.svg'
+import i from './assets/i.svg'
 
 mapboxgl.accessToken = import.meta.env.VITE_MAPBOX_TOKEN;
 
@@ -378,6 +379,31 @@ function Navigator() {
                                 <span className="heat-label">Clear</span>
                             </div>
                         )}
+                    </div>
+
+                    <div className="confidence-banner high">
+                        <div className="confidence-banner-top">
+                            <div className="confidence-title-wrap">
+                                <p className="confidence-title">Route confidence</p>
+                                <img src={i} alt="info" />
+                            </div>
+                            <p className="route-accuracy accuracy-high">High</p>
+                        </div>
+
+                        <div className="confidence-bar">
+                            <div className="bar bar-low"></div>
+                            <div className="bar bar-low-med"></div>
+                            <div className="bar bar-med"></div>
+                            <div className="bar bar-med-high"></div>
+                            <div className="bar bar-low-high"></div>
+                            <div className="bar bar-high"></div>
+                        </div>
+                        <div className="confidence-bottom">
+                            <p className="accuracy-percentage accuracy-high">96%</p>
+                            <p className="accuracy-desc">High confidence: route is based on verified data and recent reports</p>
+                        </div>
+                        
+                        
                     </div>
 
                     <div className="search-wrapper">
