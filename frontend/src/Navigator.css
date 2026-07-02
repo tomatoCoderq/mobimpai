@@ -206,25 +206,25 @@
 .switch {
     position: relative;
     display: inline-block;
-    width: 38px;
+    width: 33px;
     height: 20px;
 }
 
 .slider {
-    position: absolute;
+    /* position: absolute; */
     top: 0;
     left: 0;
     right: 0;
     bottom: 0;
 
-    background-color: #2b2b2b;
+    /* background-color: #2b2b2b; */
     border-radius: 999px;
     transition: 0.3s ease;
     cursor: pointer;
 }
 
 .slider::before {
-    position: absolute;
+    /* position: absolute; */
     content: "";
     height: 14px;
     width: 14px;
