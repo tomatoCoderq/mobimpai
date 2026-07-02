@@ -1,7 +1,9 @@
-import './Navigator.css'
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import mapboxgl from 'mapbox-gl';
 import 'mapbox-gl/dist/mapbox-gl.css';
+import MapboxGeocoder from '@mapbox/mapbox-gl-geocoder';
+import '@mapbox/mapbox-gl-geocoder/dist/mapbox-gl-geocoder.css';
+import './Navigator.css'
 import logo from './assets/MobImpAI.svg'
 import mic from './assets/mic.svg'
 import magnifier from './assets/magnifier.svg'
@@ -27,12 +29,13 @@ import route from './assets/route.svg'
 import calendar from './assets/calendar.svg'
 import slope from './assets/slope.svg'
 import stairs from './assets/stairs.svg'
-
 mapboxgl.accessToken = import.meta.env.VITE_MAPBOX_TOKEN;
 
 function Navigator() {
     const mapContainer = useRef(null);
     const mapRef = useRef(null);
+    const searchContainerRef = useRef(null);
+    const geocoderRef = useRef(null);
     const startMarkerRef = useRef(null);
     const endMarkerRef = useRef(null);
     const routeSourceId = 'mobimpai-route';
@@ -75,7 +78,69 @@ function Navigator() {
         });
 
         mapRef.current = map;
-    
+
+        const geocoder = new MapboxGeocoder({
+            accessToken: mapboxgl.accessToken,
+            mapboxgl,
+            placeholder: 'Where you going?',
+            countries: 'ru',
+            proximity: { longitude: 48.75, latitude: 55.75 },
+            marker: false,
+            flyTo: false,
+            showResultsWhileTyping: true
+        });
+
+        geocoderRef.current = geocoder;
+
+        if (searchContainerRef.current) {
+            searchContainerRef.current.replaceChildren(geocoder.onAdd(map));
+        }
+
+        const geocoderInput = searchContainerRef.current?.querySelector('.mapboxgl-ctrl-geocoder--input');
+        const geocoderClearButton = searchContainerRef.current?.querySelector('.mapboxgl-ctrl-geocoder--button');
+
+        const syncGeocoderClearButton = () => {
+            if (!geocoderInput || !geocoderClearButton) {
+                return;
+            }
+
+            geocoderClearButton.classList.toggle('is-visible', geocoderInput.value.trim().length > 0);
+        };
+
+        geocoderInput?.addEventListener('input', syncGeocoderClearButton);
+        geocoderInput?.addEventListener('focus', syncGeocoderClearButton);
+        geocoderInput?.addEventListener('blur', syncGeocoderClearButton);
+        syncGeocoderClearButton();
+
+        geocoder.on('result', (event) => {
+            const place = event?.result;
+            const coordinates = place?.center || place?.geometry?.coordinates;
+
+            if (!coordinates) {
+                return;
+            }
+
+            if (selectionModeRef.current === 'start') {
+                setStartCoord(coordinates);
+                setSelectionMode('end');
+            } else {
+                setEndCoord(coordinates);
+                setSelectionMode(null);
+            }
+
+            map.flyTo({
+                center: coordinates,
+                zoom: Math.max(map.getZoom(), 15.5),
+                essential: true
+            });
+
+            syncGeocoderClearButton();
+        });
+
+        geocoder.on('clear', () => {
+            syncGeocoderClearButton();
+        });
+
         map.on('click', (event) => {
             const mode = selectionModeRef.current;
             if (!mode) {
@@ -92,6 +157,11 @@ function Navigator() {
         });
 
         return () => {
+            geocoderInput?.removeEventListener('input', syncGeocoderClearButton);
+            geocoderInput?.removeEventListener('focus', syncGeocoderClearButton);
+            geocoderInput?.removeEventListener('blur', syncGeocoderClearButton);
+            geocoderRef.current?.onRemove();
+            geocoderRef.current = null;
             startMarkerRef.current?.remove();
             endMarkerRef.current?.remove();
             map.remove();
@@ -451,28 +521,6 @@ function Navigator() {
                                 <p>Samples: {routeState.stats.scored_samples}/{routeState.stats.samples}</p>
                             </div>
                         )}
-                        <div className="heat-toggle">
-                            <span>Heatmap</span>
-                            <label className="switch">
-                                <input
-                                    type="checkbox"
-                                    checked={heatmapEnabled}
-                                    onChange={() => setHeatmapEnabled((prev) => !prev)}
-                                />
-                                <span className="slider" />
-                            </label>
-                        </div>
-                        {routeState.stats && (
-                            <div className="heat-legend">
-                                <span className="heat-label">Obstacles</span>
-                                <div className="heat-scale">
-                                    <span className="heat-dot heat-bad" />
-                                    <span className="heat-dot heat-warn" />
-                                    <span className="heat-dot heat-good" />
-                                </div>
-                                <span className="heat-label">Clear</span>
-                            </div>
-                        )}
                     </div>
 
                     {routeState.stats && (<div className={`confidence-banner ${bannerColor}`}>
@@ -606,13 +654,12 @@ function Navigator() {
                     </div>)}
 
                     <div className="search-wrapper">
-                        <input type="text"  placeholder='Where you going?' className="nav-search" />
+                        <div className="geocoder-shell" ref={searchContainerRef} />
                         <div className="search-btns">
-                            <button><img src={mic} alt="mic" /></button>
-                            <button><img src={magnifier} alt="search" /></button>
+                            <button type="button"><img src={mic} alt="mic" /></button>
+                            <button type="button" onClick={() => searchContainerRef.current?.querySelector('input')?.focus()}><img src={magnifier} alt="search" /></button>
                         </div>
                     </div>
-                    <p className="current-location"><span>Current location:</span> Peterburgskaya St. 1</p>
                     
                     <div className="nearby">
                         <h4>Find nearby</h4>
