@@ -1,10 +1,9 @@
-import React, { useEffect, useMemo, useRef, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import mapboxgl from 'mapbox-gl';
 import 'mapbox-gl/dist/mapbox-gl.css';
 import MapboxGeocoder from '@mapbox/mapbox-gl-geocoder';
 import '@mapbox/mapbox-gl-geocoder/dist/mapbox-gl-geocoder.css';
 import './Navigator.css'
-import logo from './assets/MobImpAI.svg'
 import mic from './assets/mic.svg'
 import magnifier from './assets/magnifier.svg'
 import groceries from './assets/groceries.svg'
@@ -46,21 +45,8 @@ function Navigator() {
     const [endCoord, setEndCoord] = useState(null);
     const [selectionMode, setSelectionMode] = useState('start');
     const [routeState, setRouteState] = useState({ loading: false, error: '', stats: null, nodes: [] });
-    const [heatmapEnabled, setHeatmapEnabled] = useState(true);
+    const [heatmapEnabled] = useState(true);
     const selectionModeRef = useRef('start');
-
-    const [isMobile, setIsMobile] = useState(
-        window.matchMedia('(max-width: 575px)').matches
-    );
-
-    useEffect(() => {
-        const mq = window.matchMedia('(max-width: 575px)');
-
-        const handler = (e) => setIsMobile(e.matches);
-
-        mq.addEventListener('change', handler);
-        return () => mq.removeEventListener('change', handler);
-    }, []);
 
     const apiBase = useMemo(() => (
         import.meta.env.VITE_API_URL
@@ -213,14 +199,14 @@ function Navigator() {
         setRouteState({ loading: false, error: '', stats: null, nodes: [] });
     }, [startCoord, endCoord]);
 
-    const drawRoute = (geojson) => {
+    const drawRoute = useCallback(function drawRouteImpl(geojson) {
         const map = mapRef.current;
         if (!map) {
             return;
         }
 
         if (!map.isStyleLoaded()) {
-            map.once('load', () => drawRoute(geojson));
+            map.once('load', () => drawRouteImpl(geojson));
             return;
         }
 
@@ -247,16 +233,16 @@ function Navigator() {
             return acc.extend(coord);
         }, new mapboxgl.LngLatBounds(geojson.geometry.coordinates[0], geojson.geometry.coordinates[0]));
         map.fitBounds(bounds, { padding: 80, maxZoom: 18 });
-    };
+    }, []);
 
-    const drawHeatmap = (nodes) => {
+    const drawHeatmap = useCallback(function drawHeatmapImpl(nodes) {
         const map = mapRef.current;
         if (!map) {
             return;
         }
 
         if (!map.isStyleLoaded()) {
-            map.once('load', () => drawHeatmap(nodes));
+            map.once('load', () => drawHeatmapImpl(nodes));
             return;
         }
 
@@ -316,14 +302,14 @@ function Navigator() {
                 ]
             }
         }, beforeRoute);
-    };
+    }, [heatmapEnabled]);
 
     useEffect(() => {
         if (!mapRef.current) {
             return;
         }
         drawHeatmap(routeState.nodes || []);
-    }, [heatmapEnabled, routeState.nodes]);
+    }, [drawHeatmap, routeState.nodes]);
 
     const requestRoute = async () => {
         if (!startCoord || !endCoord) {
@@ -403,13 +389,6 @@ function Navigator() {
     // const confidence = 96;
     const segments = 6;
     const activeSegments = Math.round((confidence / 100) * segments);
-    let dotBackground;
-    if (confidence > 90) { dotBackground = 'dot-high'}
-    if (confidence > 80) { dotBackground = 'dot-low-high'}
-    if (confidence > 70) { dotBackground = 'dot-med-high'}
-    if (confidence > 60) { dotBackground = 'dot-med'}
-    if (confidence > 50) { dotBackground = 'dot-low-med'}
-    if (confidence <= 50) { dotBackground = 'dot-low'}
     let accuracyColor;
     if (confidence >= 80) { accuracyColor = 'accuracy-high'}
     if (confidence >= 70 && confidence < 80) { accuracyColor = 'accuracy-low-high'}
@@ -424,6 +403,7 @@ function Navigator() {
     if (confidence >= 50 && confidence < 60) { accuracy = 'Medium'}
     if (confidence > 30 && confidence < 50) { accuracy = 'Low'}
     if (confidence <= 30) { accuracy = 'Very low'}
+    const slopeConfidence = Math.min(89, Math.max(70, 70 + Math.round(confidence * 0.19)));
     let bannerColor;
     if (confidence >= 80) { bannerColor = 'banner-high'}
     if (confidence >= 70 && confidence < 80) { bannerColor = 'banner-high'}
@@ -637,7 +617,7 @@ function Navigator() {
                                         <h6 className="breakdown-title">Slope safety</h6>
                                         <p className="breakdown-sub">Mostly gentle slopes</p>
                                     </div>
-                                    <p className="breakdown-percentage br-yellow">{`${Math.floor(Math.random() * (89 - 70 + 1)) + 70}%`}</p>
+                                    <p className="breakdown-percentage br-yellow">{`${slopeConfidence}%`}</p>
                                 </div>
                             </div>
                             <div className="breakdown-item">
