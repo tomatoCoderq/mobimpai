@@ -40,16 +40,62 @@
         inset 0 10px 20px rgba(255, 255, 255, 0.05);
 }
 
+.nav-control-panel {
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+
+    height: 92vh;
+
+    border-radius: 20px 20px 0 0;
+
+    transform: translateY(78vh); /* COLLAPSED */
+    transition: transform 0.35s ease;
+
+    touch-action: none;
+}
+
+.nav-control-panel.collapsed {
+    transform: translateY(78vh);
+}
+
+.nav-control-panel.half {
+    transform: translateY(40vh);
+}
+
+.nav-control-panel.full {
+    transform: translateY(0);
+}
+
+.sheet-handle {
+    width: 48px;
+    height: 5px;
+    background: rgba(255,255,255,0.4);
+    border-radius: 999px;
+
+    margin: 10px auto;
+}
+
 .nav-control-panel-scroll {
     flex: 1 1 auto;
     min-height: 0;
-    overflow-y: auto;
+    /* overflow-y: auto; */
     overflow-x: hidden;
     padding: 23px 18px 23px 16px;
     position: relative;
     z-index: 1;
     scrollbar-width: thin;
     scrollbar-color: rgba(255, 255, 255, 0.3) #282828;
+}
+
+.nav-control-panel.full .nav-control-panel-scroll {
+    overflow-y: auto;
+}
+
+.nav-control-panel.collapsed .nav-control-panel-scroll,
+.nav-control-panel.half .nav-control-panel-scroll {
+    overflow-y: hidden;
 }
 
 .nav-control-panel-scroll::-webkit-scrollbar {

@@ -46,6 +46,19 @@ function Navigator() {
     const [heatmapEnabled, setHeatmapEnabled] = useState(true);
     const selectionModeRef = useRef('start');
 
+    const [isMobile, setIsMobile] = useState(
+        window.matchMedia('(max-width: 575px)').matches
+    );
+
+    useEffect(() => {
+        const mq = window.matchMedia('(max-width: 575px)');
+
+        const handler = (e) => setIsMobile(e.matches);
+
+        mq.addEventListener('change', handler);
+        return () => mq.removeEventListener('change', handler);
+    }, []);
+
     const apiBase = useMemo(() => (
         import.meta.env.VITE_API_URL
     ), []);
@@ -62,7 +75,7 @@ function Navigator() {
         });
 
         mapRef.current = map;
-
+    
         map.on('click', (event) => {
             const mode = selectionModeRef.current;
             if (!mode) {
@@ -349,6 +362,39 @@ function Navigator() {
     if (confidence > 30 && confidence < 50) { bannerColor = 'banner-low'}
     if (confidence <= 30) { bannerColor = 'banner-low'}
 
+    const [sheetPos, setSheetPos] = useState('collapsed'); 
+    const startY = useRef(0);
+    const currentY = useRef(0);
+
+    const handleTouchStart = (e) => {
+        startY.current = e.touches[0].clientY;
+    };
+
+    const handleTouchMove = (e) => {
+        currentY.current = e.touches[0].clientY;
+
+        const delta = currentY.current - startY.current;
+
+        // свайп вниз
+        if (delta > 80) {
+            setSheetPos('collapsed');
+        }
+
+        // свайп вверх
+        if (delta < -80 && sheetPos === 'collapsed') {
+            setSheetPos('half');
+        }
+
+        if (delta < -120 && sheetPos === 'half') {
+            setSheetPos('full');
+        }
+    };
+
+    const handleTouchEnd = () => {
+        startY.current = 0;
+        currentY.current = 0;
+    };
+
     
     return (
         <>
@@ -359,7 +405,14 @@ function Navigator() {
                 />
             </div>
 
-            <div className="nav-control-panel">
+            <div className={`nav-control-panel ${sheetPos}`}>
+                <div
+                    className="sheet-handle"
+                    onTouchStart={handleTouchStart}
+                    onTouchMove={handleTouchMove}
+                    onTouchEnd={handleTouchEnd}
+                >
+                </div>
                 <div className="nav-control-panel-scroll">
                     <div className="route-panel">
                         <div className="route-header">
