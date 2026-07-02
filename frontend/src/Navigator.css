@@ -1024,9 +1024,13 @@ button {
     }
 
     .nav-control-panel {
-        width: 91vw;
+        width: 100vw;
         margin-left: 0;
         margin-top: 0;
+    }
+
+    .infra-item {
+        width: 100%;
     }
 }
 
