@@ -30,6 +30,21 @@ import slope from './assets/slope.svg'
 import stairs from './assets/stairs.svg'
 mapboxgl.accessToken = import.meta.env.VITE_MAPBOX_TOKEN;
 
+function createRouteMarkerElement(kind) {
+    const marker = document.createElement('div');
+    marker.className = `route-marker route-marker-${kind}`;
+
+    const core = document.createElement('div');
+    core.className = 'route-marker-core';
+
+    const ring = document.createElement('div');
+    ring.className = 'route-marker-ring';
+
+    marker.appendChild(ring);
+    marker.appendChild(core);
+    return marker;
+}
+
 function Navigator() {
     const mapContainer = useRef(null);
     const mapRef = useRef(null);
@@ -38,14 +53,14 @@ function Navigator() {
     const startMarkerRef = useRef(null);
     const endMarkerRef = useRef(null);
     const routeSourceId = 'mobimpai-route';
-    const heatSourceId = 'mobimpai-heat';
-    const heatLayerId = 'mobimpai-heat-layer';
+    const routeGlowOuterId = 'route-glow-outer';
+    const routeGlowInnerId = 'route-glow-inner';
+    const routeCoreId = 'route-core';
 
     const [startCoord, setStartCoord] = useState(null);
     const [endCoord, setEndCoord] = useState(null);
     const [selectionMode, setSelectionMode] = useState('start');
     const [routeState, setRouteState] = useState({ loading: false, error: '', stats: null, nodes: [] });
-    const [heatmapEnabled] = useState(true);
     const selectionModeRef = useRef('start');
 
     const apiBase = useMemo(() => (
@@ -163,7 +178,10 @@ function Navigator() {
             return;
         }
         if (!startMarkerRef.current) {
-            startMarkerRef.current = new mapboxgl.Marker({ color: '#2AA7FA' });
+            startMarkerRef.current = new mapboxgl.Marker({
+                element: createRouteMarkerElement('start'),
+                anchor: 'bottom'
+            });
         }
         startMarkerRef.current.setLngLat(startCoord).addTo(mapRef.current);
     }, [startCoord]);
@@ -173,7 +191,10 @@ function Navigator() {
             return;
         }
         if (!endMarkerRef.current) {
-            endMarkerRef.current = new mapboxgl.Marker({ color: '#FA692A' });
+            endMarkerRef.current = new mapboxgl.Marker({
+                element: createRouteMarkerElement('end'),
+                anchor: 'bottom'
+            });
         }
         endMarkerRef.current.setLngLat(endCoord).addTo(mapRef.current);
     }, [endCoord]);
@@ -184,15 +205,11 @@ function Navigator() {
             return;
         }
 
-        if (map.getLayer(heatLayerId)) {
-            map.removeLayer(heatLayerId);
-        }
-        if (map.getSource(heatSourceId)) {
-            map.removeSource(heatSourceId);
-        }
-        if (map.getLayer(routeSourceId)) {
-            map.removeLayer(routeSourceId);
-        }
+        [routeCoreId, routeGlowInnerId, routeGlowOuterId].forEach((layerId) => {
+            if (map.getLayer(layerId)) {
+                map.removeLayer(layerId);
+            }
+        });
         if (map.getSource(routeSourceId)) {
             map.removeSource(routeSourceId);
         }
@@ -217,16 +234,65 @@ function Navigator() {
                 type: 'geojson',
                 data: geojson
             });
-            map.addLayer({
-                id: routeSourceId,
-                type: 'line',
-                source: routeSourceId,
-                paint: {
-                    'line-color': '#FA692A',
-                    'line-width': 4,
-                    'line-opacity': 0.85
-                }
-            });
+        }
+
+        const routeCoreLayer = {
+            id: routeCoreId,
+            type: 'line',
+            source: routeSourceId,
+            layout: {
+                'line-join': 'round',
+                'line-cap': 'round'
+            },
+            paint: {
+                'line-emissive-strength': 1,
+                'line-color': '#ffffff',
+                'line-width': 3
+            }
+        };
+
+        const routeGlowInnerLayer = {
+            id: routeGlowInnerId,
+            type: 'line',
+            source: routeSourceId,
+            layout: {
+                'line-join': 'round',
+                'line-cap': 'round'
+            },
+            paint: {
+                'line-emissive-strength': 1,
+                'line-color': '#ff9a1f',
+                'line-width': 8,
+                'line-blur': 1,
+                'line-opacity': 0.8
+            }
+        };
+
+        const routeGlowOuterLayer = {
+            id: routeGlowOuterId,
+            type: 'line',
+            source: routeSourceId,
+            layout: {
+                'line-join': 'round',
+                'line-cap': 'round'
+            },
+            paint: {
+                'line-emissive-strength': 1,
+                'line-color': '#ff6a00',
+                'line-width': 18,
+                'line-blur': 12,
+                'line-opacity': 0.5
+            }
+        };
+
+        if (!map.getLayer(routeCoreId)) {
+            map.addLayer(routeCoreLayer);
+        }
+        if (!map.getLayer(routeGlowInnerId)) {
+            map.addLayer(routeGlowInnerLayer, routeCoreId);
+        }
+        if (!map.getLayer(routeGlowOuterId)) {
+            map.addLayer(routeGlowOuterLayer, routeGlowInnerId);
         }
 
         const bounds = geojson.geometry.coordinates.reduce((acc, coord) => {
@@ -234,82 +300,6 @@ function Navigator() {
         }, new mapboxgl.LngLatBounds(geojson.geometry.coordinates[0], geojson.geometry.coordinates[0]));
         map.fitBounds(bounds, { padding: 80, maxZoom: 18 });
     }, []);
-
-    const drawHeatmap = useCallback(function drawHeatmapImpl(nodes) {
-        const map = mapRef.current;
-        if (!map) {
-            return;
-        }
-
-        if (!map.isStyleLoaded()) {
-            map.once('load', () => drawHeatmapImpl(nodes));
-            return;
-        }
-
-        const features = (nodes || [])
-            .filter((node) => typeof node.passability === 'number')
-            .map((node) => ({
-                type: 'Feature',
-                properties: { passability: node.passability },
-                geometry: { type: 'Point', coordinates: [node.lng, node.lat] }
-            }));
-
-        const data = {
-            type: 'FeatureCollection',
-            features
-        };
-
-        if (!heatmapEnabled) {
-            if (map.getLayer(heatLayerId)) {
-                map.removeLayer(heatLayerId);
-            }
-            if (map.getSource(heatSourceId)) {
-                map.removeSource(heatSourceId);
-            }
-            return;
-        }
-
-        if (map.getSource(heatSourceId)) {
-            map.getSource(heatSourceId).setData(data);
-            return;
-        }
-
-        map.addSource(heatSourceId, {
-            type: 'geojson',
-            data
-        });
-
-        const beforeRoute = map.getLayer(routeSourceId) ? routeSourceId : undefined;
-
-        map.addLayer({
-            id: heatLayerId,
-            type: 'heatmap',
-            source: heatSourceId,
-            maxzoom: 22,
-            paint: {
-                'heatmap-weight': ['interpolate', ['linear'], ['get', 'passability'], 0, 0.4, 1, 1],
-                'heatmap-intensity': ['interpolate', ['linear'], ['zoom'], 11, 1.1, 15, 1.5, 18, 1.7],
-                'heatmap-radius': ['interpolate', ['linear'], ['zoom'], 11, 35, 15, 55, 18, 70],
-                'heatmap-opacity': 0.65,
-                'heatmap-color': [
-                    'interpolate',
-                    ['linear'],
-                    ['heatmap-density'],
-                    0, 'rgba(0,0,0,0)',
-                    0.2, 'rgba(255, 92, 92, 0.55)',
-                    0.55, 'rgba(255, 179, 71, 0.6)',
-                    0.9, 'rgba(123, 217, 123, 0.7)'
-                ]
-            }
-        }, beforeRoute);
-    }, [heatmapEnabled]);
-
-    useEffect(() => {
-        if (!mapRef.current) {
-            return;
-        }
-        drawHeatmap(routeState.nodes || []);
-    }, [drawHeatmap, routeState.nodes]);
 
     const requestRoute = async () => {
         if (!startCoord || !endCoord) {
@@ -340,7 +330,6 @@ function Navigator() {
 
             const data = await response.json();
             drawRoute(data.geojson);
-            drawHeatmap(data.nodes);
             setRouteState({ loading: false, error: '', stats: data.stats, nodes: data.nodes });
         } catch (error) {
             setRouteState({ loading: false, error: error.message, stats: null, nodes: [] });
