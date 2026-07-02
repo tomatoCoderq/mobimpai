@@ -223,7 +223,10 @@ function Navigator() {
             data
         });
 
-        const beforeRoute = map.getLayer(routeSourceId) ? routeSourceId : undefined;
+        // const beforeRoute = map.getLayer(routeSourceId) ? routeSourceId : undefined;
+        const beforeRoute = map.getLayer('route-glow-outer')
+            ? 'route-glow-outer'
+            : undefined;
 
         map.addLayer({
             id: heatLayerId,
