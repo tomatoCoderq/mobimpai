@@ -482,14 +482,14 @@ function Navigator() {
                         {routeState.error && (
                             <p className="route-error">{routeState.error}</p>
                         )}
-                        {routeState.stats && (
+                        {/* {routeState.stats && (
                             <div className="route-stats">
                                 <p>Distance: {routeState.stats.distance_m} m</p>
                                 <p>Duration: {Math.round(routeState.stats.duration_s / 60)} min</p>
                                 <p>Avg passability: {routeState.stats.avg_passability}</p>
                                 <p>Samples: {routeState.stats.scored_samples}/{routeState.stats.samples}</p>
                             </div>
-                        )}
+                        )} */}
                     </div>
 
                     {routeState.stats && (<div className={`confidence-banner ${bannerColor}`}>
