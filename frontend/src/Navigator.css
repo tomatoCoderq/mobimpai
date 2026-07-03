@@ -120,7 +120,7 @@
 .sheet-handle {
     display: none;
     width: 48px;
-    height: 5px;
+    height: 7px;
     background: rgba(255,255,255,0.4);
     border-radius: 999px;
 

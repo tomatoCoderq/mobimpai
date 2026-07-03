@@ -405,21 +405,48 @@ function Navigator() {
     const startY = useRef(0);
     const currentY = useRef(0);
 
-    const handleTouchStart = (e) => {
-        startY.current = e.touches[0].clientY;
+    // const handleTouchStart = (e) => {
+    //     startY.current = e.touches[0].clientY;
+    // };
+
+    // const handleTouchMove = (e) => {
+    //     currentY.current = e.touches[0].clientY;
+
+    //     const delta = currentY.current - startY.current;
+
+    //     // свайп вниз
+    //     if (delta > 80) {
+    //         setSheetPos('collapsed');
+    //     }
+
+    //     // свайп вверх
+    //     if (delta < -80 && sheetPos === 'collapsed') {
+    //         setSheetPos('half');
+    //     }
+
+    //     if (delta < -120 && sheetPos === 'half') {
+    //         setSheetPos('full');
+    //     }
+    // };
+
+    // const handleTouchEnd = () => {
+    //     startY.current = 0;
+    //     currentY.current = 0;
+    // };
+
+    const handlePointerDown = (e) => {
+        startY.current = e.clientY;
     };
 
-    const handleTouchMove = (e) => {
-        currentY.current = e.touches[0].clientY;
+    const handlePointerMove = (e) => {
+        currentY.current = e.clientY;
 
         const delta = currentY.current - startY.current;
 
-        // свайп вниз
         if (delta > 80) {
             setSheetPos('collapsed');
         }
 
-        // свайп вверх
         if (delta < -80 && sheetPos === 'collapsed') {
             setSheetPos('half');
         }
@@ -429,7 +456,7 @@ function Navigator() {
         }
     };
 
-    const handleTouchEnd = () => {
+    const handlePointerUp = () => {
         startY.current = 0;
         currentY.current = 0;
     };
@@ -446,12 +473,11 @@ function Navigator() {
 
             <div className={`nav-control-panel ${sheetPos}`}>
                 <div
-                    className="sheet-handle"
-                    onTouchStart={handleTouchStart}
-                    onTouchMove={handleTouchMove}
-                    onTouchEnd={handleTouchEnd}
-                >
-                </div>
+                className="sheet-handle"
+                onPointerDown={handlePointerDown}
+                onPointerMove={handlePointerMove}
+                onPointerUp={handlePointerUp}
+                />
                 <div className="nav-control-panel-scroll">
                     <div className="route-panel">
                         <div className="route-header">
