@@ -117,11 +117,19 @@
     border-radius: 12px;
 }
 
+.sheet-drag-zone {
+    height: 40px;
+    width: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+}
+
 .sheet-handle {
     display: none;
     touch-action: none;
     width: 48px;
-    height: 7px;
+    height: 5px;
     background: rgba(255,255,255,0.4);
     border-radius: 999px;
 

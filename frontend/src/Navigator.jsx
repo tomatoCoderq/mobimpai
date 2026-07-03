@@ -472,11 +472,12 @@ function Navigator() {
             </div>
 
             <div className={`nav-control-panel ${sheetPos}`}>
+                <div className="sheet-handle" />
                 <div
-                className="sheet-handle"
-                onPointerDown={handlePointerDown}
-                onPointerMove={handlePointerMove}
-                onPointerUp={handlePointerUp}
+                    className="sheet-drag-zone"
+                    onPointerDown={handlePointerDown}
+                    onPointerMove={handlePointerMove}
+                    onPointerUp={handlePointerUp}
                 />
                 <div className="nav-control-panel-scroll">
                     <div className="route-panel">
