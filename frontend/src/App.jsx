@@ -115,7 +115,7 @@ function Mission() {
             </div>
 
             <div className="mission-desc">
-              <p>Urban environments were rarely built with everyone in mind. For many, a single set of stairs or a missing ramp isn't just an inconvenience—it’s a wall that stops a journey. We believe that technology should serve as a bridge, turning "impassable" into "possible" by providing the most granular accessibility data ever recorded.</p>
+              <p>Urban environments were rarely built with everyone in mind. For many, a single set of stairs or a missing ramp isn't just an inconvenience. It’s a wall that stops a journey. We believe that technology should serve as a bridge, turning "impassable" into "possible" by providing the most granular accessibility data ever recorded.</p>
               <p>Our goal is to eliminate the anxiety of the unknown. By mapping the world’s micro-barriers, we empower individuals to reclaim their cities. We aren't just building a navigation tool; we are fostering a more inclusive society where mobility is seamless, predictable, and, above all, dignified for everyone.</p>
             </div>
           </div>
@@ -125,21 +125,21 @@ function Mission() {
               <p className="mission-num">#01</p>
               <div className="mission-card-text">
                 <h3>Invisible Barriers</h3>
-                <p>Traditional maps ignore real-world friction — stairs, curbs, broken paths. We surface what others leave unseen.</p>
+                <p>Traditional maps ignore real-world friction: stairs, curbs, broken paths. We surface what others leave unseen.</p>
               </div>
             </div>
             <div className="mission-card">
               <p className="mission-num">#02</p>
               <div className="mission-card-text">
                 <h3>Human-Centered Design</h3>
-                <p>Navigation should adapt to people — not the other way around. Every route is personalized, contextual, and aware.</p>
+                <p>Navigation should adapt to people, not the other way around. Every route is personalized, contextual, and aware.</p>
               </div>
             </div>
             <div className="mission-card">
               <p className="mission-num">#03</p>
               <div className="mission-card-text">
                 <h3>Dignity in Motion</h3>
-                <p>Independence isn't a feature — it's a right. We design for confidence, safety, and autonomy.</p>
+                <p>Independence isn't a feature. It's a right. We design for confidence, safety, and autonomy.</p>
               </div>
             </div>
           </div>
@@ -217,7 +217,7 @@ function Process() {
                 <div className={`slider-card ${activeIndex === 0 ? 'slider-card-selected' : ''}`}>
                     <div className="slider-card-content">
                         <h3 className="slider-card-title">Define Your Needs</h3>
-                        <p className="slider-card-text">Select your mobility profile — from wheelchair dimensions to preferred surface types.</p>
+                        <p className="slider-card-text">Select your mobility profile: from wheelchair dimensions to preferred surface types.</p>
                         <p className="slider-card-num">01</p>
                     </div>
                 </div>

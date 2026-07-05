@@ -123,6 +123,7 @@
     position: absolute;
     top: 0;
     left: 0;
+    z-index: 3;
 }
 
 .sheet-handle {
@@ -729,7 +730,7 @@ button {
 }
 
 .infra-wrapper {
-    padding: 8px 12px 8px 13px;
+    padding: 8px 16px 8px 13px;
 }
 
 .profile-status h4 {
@@ -1281,6 +1282,10 @@ button {
         touch-action: none;
     }
 
+    .nav-control-panel.full .nav-control-panel-scroll::-webkit-scrollbar {
+        display: none;
+    }
+
     .nav-control-panel.collapsed {
         transform: translateY(78vh);
     }
@@ -1299,6 +1304,8 @@ button {
 
     .nav-control-panel.full .nav-control-panel-scroll {
         overflow-y: auto;
+        scrollbar-width: none;
+        -ms-overflow-style: none;
     }
 
     .nav-control-panel.collapsed .nav-control-panel-scroll,
