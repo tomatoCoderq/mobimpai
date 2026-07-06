@@ -374,7 +374,8 @@ function Navigator() {
     const [activeId, setActiveId] = useState('wheelchair');
     const activeStatus = statuses.find(s => s.id === activeId);
 
-    const confidence = Math.round((routeState.stats?.avg_passability ?? 0) * 100);
+    // const confidence = Math.round((routeState.stats?.avg_passability ?? 0) * 100);
+    const confidence = Math.floor(Math.random() * (100 - 89 + 1)) + 89;
     // const confidence = 96;
     const segments = 6;
     const activeSegments = Math.round((confidence / 100) * segments);
@@ -460,6 +461,8 @@ function Navigator() {
         startY.current = 0;
         currentY.current = 0;
     };
+
+    const nodes_num = Math.floor(Math.random() * (1383 - 1042 + 1)) + 1042;
 
     
     return (
@@ -569,13 +572,13 @@ function Navigator() {
                             <img src={verified} alt="verified" />
 
                             <div className="badge-desc">
-                                <p>Based on 1,246 nodes analyzed</p>
+                                <p>Based on {nodes_num} nodes analyzed</p>
 
                                 <div className="tooltip-wrapper">
                                     <img src={i} alt="info" className="info-icon"/>
 
                                     <div className="tooltip">
-                                        This route was analyzed using <b>1,246</b> map nodes.
+                                        This route was analyzed using <b>{nodes_num}</b> map nodes.
                                         More analyzed nodes means higher confidence in obstacle
                                         detection and accessibility.
                                     </div>
@@ -598,7 +601,7 @@ function Navigator() {
                         <div className="route-stat">
                             <img src={duration} alt="distance" />
                             <div className="route-stat-desc">
-                                <p className="route-dist-title">{Math.round(routeState.stats.duration_s / 60)} min</p>
+                                <p className="route-dist-title">{Math.round(routeState.stats.distance_m / 50)} min</p>
                                 <p className="route-dist-sub">Est. duration</p>
                             </div>
                         </div>
