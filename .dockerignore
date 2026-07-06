@@ -1,0 +1,6 @@
+*
+!backend/
+!frontend/
+!best.pt
+!docker-compose.yml
+!.dockerignore

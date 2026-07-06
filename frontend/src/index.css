@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap');
+
 :root {
   --text: #6b6375;
   --text-h: #08060d;
@@ -15,8 +17,6 @@
   --heading: system-ui, 'Segoe UI', Roboto, sans-serif;
   --mono: ui-monospace, Consolas, monospace;
 
-  font: 18px/145% var(--sans);
-  letter-spacing: 0.18px;
   color-scheme: light dark;
   color: var(--text);
   background: var(--bg);
@@ -52,6 +52,11 @@
 
 body {
   margin: 0;
+  font-family: "Montserrat", sans-serif;
+}
+
+html {
+  scroll-behavior: smooth;
 }
 
 #root {
@@ -69,13 +74,15 @@ h2 {
   margin: 0;
 }
 
+h3, h4, h5, h6 {
+  margin: 0;
+}
+
 h1 {
   font-size: 56px;
   letter-spacing: -1.68px;
   margin: 0;
   @media (max-width: 1024px) {
-    font-size: 36px;
-    margin: 20px 0;
   }
 }
 h2 {
