@@ -1,6 +1,5 @@
 services:
   backend:
-    platform: linux/arm64
     build:
       context: .
       dockerfile: backend/Dockerfile
@@ -9,8 +8,8 @@ services:
       MODEL_PATH: /app/best.pt
       TILE_SERVER_URL: https://tile.openstreetmap.org/{z}/{x}/{y}.png
       OSRM_BASE_URL: https://router.project-osrm.org
-    ports:
-      - "8000:8000"
+    expose:
+      - "8000"
     restart: unless-stopped
 
   frontend:
@@ -24,5 +23,5 @@ services:
     depends_on:
       - backend
     ports:
-      - "3000:80"
+      - "80:80"
     restart: unless-stopped
