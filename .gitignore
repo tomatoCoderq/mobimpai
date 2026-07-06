@@ -11,3 +11,5 @@
 inst.md
 __pycache__/
 .env
+backend/.env
+frontend/.env

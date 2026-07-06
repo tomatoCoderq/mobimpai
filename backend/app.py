@@ -25,14 +25,10 @@ TILE_SERVER_URL = os.getenv(
     "TILE_SERVER_URL", "https://tile.openstreetmap.org/{z}/{x}/{y}.png"
 )
 OSRM_BASE_URL = os.getenv("OSRM_BASE_URL", "https://router.project-osrm.org")
-MAPILLARY_TOKEN = os.getenv("MAPILLARY_TOKEN")
-MAPILLARY_BASE_URL = os.getenv("MAPILLARY_BASE_URL", "https://graph.mapillary.com")
 TILE_SIZE = 256
 IMAGE_SIZE = 640
 IMAGE_CACHE: Dict[Tuple[float, float, int], Image.Image] = {}
 SCORE_CACHE: Dict[Tuple[float, float, int], float] = {}
-MAPILLARY_IMAGE_CACHE: Dict[Tuple[float, float], Image.Image] = {}
-MAPILLARY_SCORE_CACHE: Dict[Tuple[float, float], float] = {}
 
 CLASS_WEIGHTS = {0: 0.3, 1: 0.15, 2: 1.0, 3: 0.1}
 
@@ -58,7 +54,7 @@ class RouteRequest(BaseModel):
     zoom: int = 18
     grid_size: int = Field(9, ge=5, le=21, description="Odd grid size (5..21)")
     sample_distance: int = Field(40, ge=10, le=200, description="Meters between samples")
-    max_samples: int = Field(18, ge=3, le=60, description="Max Mapillary samples")
+    max_samples: int = Field(18, ge=3, le=60, description="Max samples")
 
 
 class RouteResponse(BaseModel):
@@ -201,111 +197,6 @@ def score_tile(lng: float, lat: float, zoom: int) -> float:
     return score
 
 
-def fetch_mapillary_image(lng: float, lat: float, radius: int = 50) -> Optional[Image.Image]:
-    if not MAPILLARY_TOKEN:
-        raise HTTPException(status_code=500, detail="MAPILLARY_TOKEN is not set")
-
-    cache_key = (round(lng, 5), round(lat, 5))
-    cached = MAPILLARY_IMAGE_CACHE.get(cache_key)
-    if cached is not None:
-        return cached.copy()
-
-    safe_radius = min(max(1, radius), 50)
-    images_url = (
-        f"{MAPILLARY_BASE_URL}/images"
-        f"?access_token={MAPILLARY_TOKEN}"
-        "&fields=id,thumb_1024_url"
-        f"&lat={lat}"
-        f"&lng={lng}"
-        f"&radius={safe_radius}"
-        "&limit=5"
-    )
-    try:
-        response = requests.get(images_url, timeout=20)
-        response.raise_for_status()
-        payload = response.json()
-        data = payload.get("data", [])
-    except requests.RequestException as exc:
-        status = getattr(exc.response, "status_code", "n/a")
-        body = getattr(exc.response, "text", "")
-        print(f"Mapillary lookup failed: {status} {body}", flush=True)
-        return None
-    if not data:
-        print(f"Mapillary lookup returned no images payload={payload}", flush=True)
-        return None
-
-    thumb_url = None
-    image_id = None
-    for item in data:
-        if item.get("thumb_1024_url"):
-            thumb_url = item.get("thumb_1024_url")
-            image_id = item.get("id")
-            break
-        if image_id is None:
-            image_id = item.get("id")
-
-    if not thumb_url and image_id:
-        detail_url = (
-            f"{MAPILLARY_BASE_URL}/{image_id}"
-            f"?access_token={MAPILLARY_TOKEN}"
-            "&fields=thumb_1024_url"
-        )
-        try:
-            detail = requests.get(detail_url, timeout=20)
-            detail.raise_for_status()
-            thumb_url = detail.json().get("thumb_1024_url")
-        except requests.RequestException as exc:
-            status = getattr(exc.response, "status_code", "n/a")
-            body = getattr(exc.response, "text", "")
-            print(f"Mapillary detail failed: {status} {body}", flush=True)
-            return None
-    if not thumb_url:
-        print("Mapillary image URL missing", flush=True)
-        return None
-
-    try:
-        image_response = requests.get(thumb_url, timeout=20)
-        image_response.raise_for_status()
-        image = Image.open(io.BytesIO(image_response.content)).convert("RGB")
-    except requests.RequestException as exc:
-        print(f"Mapillary image fetch failed: {exc}", flush=True)
-        return None
-    MAPILLARY_IMAGE_CACHE[cache_key] = image
-    return image.copy()
-
-
-def score_mapillary(lng: float, lat: float) -> Optional[float]:
-    cache_key = (round(lng, 5), round(lat, 5))
-    cached = MAPILLARY_SCORE_CACHE.get(cache_key)
-    if cached is not None:
-        return cached
-
-    image = fetch_mapillary_image(lng, lat)
-    if image is None:
-        return None
-
-    results = model(image)
-    r = results[0]
-
-    objects = []
-    for i, box in enumerate(r.boxes):
-        mask_area = 0.0
-        if r.masks is not None and i < len(r.masks.data):
-            mask_area = float(r.masks.data[i].sum()) / (r.masks.data[i].numel() or 1)
-        objects.append(
-            {
-                "class_id": int(box.cls),
-                "confidence": float(box.conf),
-                "cx": float(box.xywh[0][0]) / image.size[0],
-                "cy": float(box.xywh[0][1]) / image.size[1],
-                "mask_area": mask_area,
-            }
-        )
-    score = compute_passability(objects)
-    MAPILLARY_SCORE_CACHE[cache_key] = score
-    return score
-
-
 def osrm_route(start: Tuple[float, float], end: Tuple[float, float]) -> Tuple[List[List[float]], float, float]:
     url = (
         f"{OSRM_BASE_URL}/route/v1/foot/"
@@ -438,14 +329,10 @@ async def route(payload: RouteRequest) -> RouteResponse:
     coordinates, distance_m, duration_s = osrm_route(payload.start, payload.end)
     samples = sample_line(coordinates, payload.sample_distance, payload.max_samples)
     scored_samples = []
-    missing_samples = 0
     response_nodes = []
     for lng, lat in samples:
-        score = score_mapillary(lng, lat)
-        if score is None:
-            missing_samples += 1
-        else:
-            scored_samples.append(score)
+        score = score_tile(lng, lat, payload.zoom)
+        scored_samples.append(score)
         response_nodes.append({"lng": lng, "lat": lat, "passability": score})
 
     if not scored_samples:
@@ -464,7 +351,6 @@ async def route(payload: RouteRequest) -> RouteResponse:
         "duration_s": round(duration_s, 1),
         "samples": len(samples),
         "scored_samples": len(scored_samples),
-        "missing_samples": missing_samples,
     }
 
     total_time = time.perf_counter() - start_time
