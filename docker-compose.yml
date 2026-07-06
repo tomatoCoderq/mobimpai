@@ -1,0 +1,30 @@
+services:
+  backend:
+    platform: linux/arm64
+    build:
+      context: .
+      dockerfile: backend/Dockerfile
+    image: mobimpai-backend
+    environment:
+      MODEL_PATH: /app/best.pt
+      TILE_SERVER_URL: https://tile.openstreetmap.org/{z}/{x}/{y}.png
+      OSRM_BASE_URL: https://router.project-osrm.org
+      MAPILLARY_BASE_URL: https://graph.mapillary.com
+      MAPILLARY_TOKEN: ${MAPILLARY_TOKEN:-}
+    ports:
+      - "8000:8000"
+    restart: unless-stopped
+
+  frontend:
+    build:
+      context: .
+      dockerfile: frontend/Dockerfile
+      args:
+        VITE_API_URL: /api
+        VITE_MAPBOX_TOKEN: ${VITE_MAPBOX_TOKEN:-}
+    image: mobimpai-frontend
+    depends_on:
+      - backend
+    ports:
+      - "3000:80"
+    restart: unless-stopped

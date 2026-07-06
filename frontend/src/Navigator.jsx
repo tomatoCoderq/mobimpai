@@ -64,7 +64,7 @@ function Navigator() {
     const selectionModeRef = useRef('start');
 
     const apiBase = useMemo(() => (
-        import.meta.env.VITE_API_URL
+        (import.meta.env.VITE_API_URL || '/api').replace(/\/$/, '')
     ), []);
 
     useEffect(() => {
