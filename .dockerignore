@@ -1,6 +1,6 @@
 *
 !backend/
 !frontend/
-!best.pt
+!sidewalk_model.onnx*
 !docker-compose.yml
 !.dockerignore

@@ -1,3 +1,13 @@
+# Local dev stack (Mac). No Caddy, no TLS, no domain.
+# - Frontend served via its built-in nginx on host port 3000 (SPA + /api proxy).
+# - Backend also exposed on host port 8000 for direct debugging / curl.
+#
+# Usage:
+#   docker compose up -d --build
+#   open http://localhost:3000
+#
+# For the VM / prod stack, use docker-compose.prod.yml instead.
+
 services:
   backend:
     build:
@@ -5,11 +15,11 @@ services:
       dockerfile: backend/Dockerfile
     image: mobimpai-backend
     environment:
-      MODEL_PATH: /app/best.pt
+      MODEL_PATH: /app/sidewalk_model.onnx
       TILE_SERVER_URL: https://tile.openstreetmap.org/{z}/{x}/{y}.png
       OSRM_BASE_URL: https://router.project-osrm.org
-    expose:
-      - "8000"
+    ports:
+      - "8000:8000"
     restart: unless-stopped
 
   frontend:
@@ -22,23 +32,6 @@ services:
     image: mobimpai-frontend
     depends_on:
       - backend
-    expose:
-      - "80"
-    restart: unless-stopped
-
-  caddy:
-    image: caddy:2-alpine
-    depends_on:
-      - frontend
     ports:
-      - "80:80"
-      - "443:443"
-    volumes:
-      - ./Caddyfile:/etc/caddy/Caddyfile:ro
-      - caddy_data:/data
-      - caddy_config:/config
+      - "3000:80"
     restart: unless-stopped
-
-volumes:
-  caddy_data:
-  caddy_config:

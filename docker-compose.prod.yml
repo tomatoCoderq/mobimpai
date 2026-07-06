@@ -1,0 +1,51 @@
+# Production stack (VM, public internet).
+# Caddy owns 80/443, auto-provisions Let's Encrypt certs for the Caddyfile hostnames.
+# Backend and frontend are only reachable through Caddy's reverse proxy.
+#
+# Usage on the server:
+#   docker compose -f docker-compose.prod.yml up -d --build
+
+services:
+  backend:
+    build:
+      context: .
+      dockerfile: backend/Dockerfile
+    image: mobimpai-backend
+    environment:
+      MODEL_PATH: /app/sidewalk_model.onnx
+      TILE_SERVER_URL: https://tile.openstreetmap.org/{z}/{x}/{y}.png
+      OSRM_BASE_URL: https://router.project-osrm.org
+    expose:
+      - "8000"
+    restart: unless-stopped
+
+  frontend:
+    build:
+      context: .
+      dockerfile: frontend/Dockerfile
+      args:
+        VITE_API_URL: /api
+        VITE_MAPBOX_TOKEN: ${VITE_MAPBOX_TOKEN:-}
+    image: mobimpai-frontend
+    depends_on:
+      - backend
+    expose:
+      - "80"
+    restart: unless-stopped
+
+  caddy:
+    image: caddy:2-alpine
+    depends_on:
+      - frontend
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy_data:/data
+      - caddy_config:/config
+    restart: unless-stopped
+
+volumes:
+  caddy_data:
+  caddy_config:

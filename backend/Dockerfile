@@ -12,10 +12,13 @@ COPY backend/requirements.txt ./requirements.txt
 RUN pip install --index-url https://pypi.tuna.tsinghua.edu.cn/simple \
         fastapi==0.115.0 \
         uvicorn==0.30.6 \
-        python-dotenv==1.0.1
+        python-dotenv==1.0.1 \
+        onnx==1.17.0 \
+        onnxruntime==1.19.2
 
-COPY backend/app.py ./app.py
-COPY best.pt /app/best.pt
+COPY backend/ ./
+COPY sidewalk_model.onnx      /app/sidewalk_model.onnx
+COPY sidewalk_model.onnx.data /app/sidewalk_model.onnx.data
 
 EXPOSE 8000
 CMD ["uvicorn", "app:app", "--host", "0.0.0.0", "--port", "8000"]
