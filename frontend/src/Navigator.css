@@ -65,7 +65,8 @@
 
 .navigator-wrapper {
   border: 1px solid rgba(255, 255, 255, 0.1);
-  overflow: hidden;
+  /* overflow: hidden убран — он блокирует backdrop-filter на Android Chrome */
+  clip-path: inset(0 round 12px);
   background: #0a0a0a;
   position: relative;
 }
@@ -76,7 +77,6 @@
     max-height: 87vh;
     z-index: 2;
     position: absolute;
-    background-color: #fff;
     top: 0;
     left: 0;
     margin-top: 25px;
@@ -85,19 +85,24 @@
     overflow: hidden;
     display: flex;
     flex-direction: column;
-    isolation: isolate;
+    /* isolation: isolate убран — конфликтует с backdrop-filter */
     background: rgba(255, 255, 255, 0.03);
     border-radius: 12px;
-    backdrop-filter: blur(15px) !important;
-    -webkit-backdrop-filter: blur(15px) !important;
+    backdrop-filter: blur(20px) saturate(180%);
+    -webkit-backdrop-filter: blur(20px) saturate(180%);
+    will-change: transform;
 
-    box-shadow: 
+    box-shadow:
         0 8px 32px rgba(0, 0, 0, 0.4),
         inset 0 0 0 1px rgba(255, 255, 255, 0.1),
         inset 0 10px 20px rgba(255, 255, 255, 0.05);
+}
 
-    top: 0;
-    left: 0;      
+/* Fallback для браузеров без поддержки backdrop-filter */
+@supports not (backdrop-filter: blur(1px)) {
+    .nav-control-panel {
+        background: rgba(18, 18, 18, 0.88);
+    }
 }
 
 /* .nav-control-panel {
@@ -1292,8 +1297,10 @@ button {
         transition: transform .35s ease;
 
         touch-action: none;
-        backdrop-filter: blur(15px) !important;
-        -webkit-backdrop-filter: blur(15px) !important;
+        /* will-change форсирует отдельный GPU-слой, необходим для backdrop-filter + transform на мобиле */
+        will-change: transform;
+        backdrop-filter: blur(20px) saturate(180%);
+        -webkit-backdrop-filter: blur(20px) saturate(180%);
     }
 
     .nav-control-panel.full .nav-control-panel-scroll::-webkit-scrollbar {
