@@ -402,9 +402,10 @@ function Navigator() {
     if (confidence > 30 && confidence < 50) { bannerColor = 'banner-low'}
     if (confidence <= 30) { bannerColor = 'banner-low'}
 
-    const [sheetPos, setSheetPos] = useState('collapsed'); 
+    const [sheetPos, setSheetPos] = useState('collapsed');
     const startY = useRef(0);
     const currentY = useRef(0);
+    const isDragging = useRef(false);
 
     // const handleTouchStart = (e) => {
     //     startY.current = e.touches[0].clientY;
@@ -436,12 +437,15 @@ function Navigator() {
     // };
 
     const handlePointerDown = (e) => {
+        isDragging.current = true;
         startY.current = e.clientY;
+        e.currentTarget.setPointerCapture(e.pointerId);
     };
 
     const handlePointerMove = (e) => {
-        currentY.current = e.clientY;
+        if (!isDragging.current) return;
 
+        currentY.current = e.clientY;
         const delta = currentY.current - startY.current;
 
         if (delta > 80) {
@@ -458,6 +462,7 @@ function Navigator() {
     };
 
     const handlePointerUp = () => {
+        isDragging.current = false;
         startY.current = 0;
         currentY.current = 0;
     };
