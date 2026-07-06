@@ -1,4 +1,4 @@
-FROM ultralytics/ultralytics:latest-arm64
+FROM ultralytics/ultralytics:latest-python
 
 ENV PYTHONDONTWRITEBYTECODE=1 \
     PYTHONUNBUFFERED=1 \
