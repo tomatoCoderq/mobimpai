@@ -16,7 +16,6 @@ OSRM_BASE_URL = os.getenv("OSRM_BASE_URL", "https://router.project-osrm.org")
 TILE_SIZE = 256
 IMAGE_SIZE = 512
 
-
 CLASS_WEIGHTS = {
     0: 0.5,
     1: 0.0,
