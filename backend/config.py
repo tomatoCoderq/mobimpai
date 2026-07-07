@@ -16,9 +16,7 @@ OSRM_BASE_URL = os.getenv("OSRM_BASE_URL", "https://router.project-osrm.org")
 TILE_SIZE = 256
 IMAGE_SIZE = 512
 
-# Obstacle weight per predicted class ID for the segmentation model.
-# passability = 1 - sum(pixel_fraction[c] * CLASS_WEIGHTS[c]).
-# 0.0 = fully walkable, 1.0 = fully blocking. Tune to your model's class map.
+
 CLASS_WEIGHTS = {
     0: 0.5,
     1: 0.0,
