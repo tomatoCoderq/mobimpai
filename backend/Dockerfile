@@ -1,4 +1,4 @@
-FROM ultralytics/ultralytics:latest-python
+FROM python:3.11-slim
 
 ENV PYTHONDONTWRITEBYTECODE=1 \
     PYTHONUNBUFFERED=1 \
@@ -6,15 +6,13 @@ ENV PYTHONDONTWRITEBYTECODE=1 \
 
 WORKDIR /app/backend
 
-# Ultralytics image already has torch, torchvision, ultralytics, opencv, numpy.
-# Only install what's *not* included.
+# libgomp1 is needed by onnxruntime's OpenMP threading on CPU.
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends libgomp1 && \
+    rm -rf /var/lib/apt/lists/*
+
 COPY backend/requirements.txt ./requirements.txt
-RUN pip install --index-url https://pypi.tuna.tsinghua.edu.cn/simple \
-        fastapi==0.115.0 \
-        uvicorn==0.30.6 \
-        python-dotenv==1.0.1 \
-        onnx==1.17.0 \
-        onnxruntime==1.19.2
+RUN pip install --index-url https://pypi.tuna.tsinghua.edu.cn/simple -r requirements.txt
 
 COPY backend/ ./
 COPY sidewalk_model.onnx      /app/sidewalk_model.onnx

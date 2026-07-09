@@ -16,3 +16,5 @@ frontend/.env
 todo.md
 sidewalk_model.onnx.data
 sidewalk_model.onnx
+debug/
+.DS_Store

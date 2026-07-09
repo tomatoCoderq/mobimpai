@@ -319,7 +319,7 @@ function Navigator() {
                     zoom,
                     grid_size: 5,
                     sample_distance: 40,
-                    max_samples: 18
+                    max_samples: 4
                 })
             });
 
