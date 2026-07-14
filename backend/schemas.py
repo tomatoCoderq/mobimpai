@@ -14,7 +14,7 @@ class RouteRequest(BaseModel):
     zoom: int = 18
     grid_size: int = Field(9, ge=5, le=21, description="Odd grid size (5..21)")
     sample_distance: int = Field(40, ge=10, le=200, description="Meters between samples")
-    max_samples: int = Field(18, ge=3, le=60, description="Max samples")
+    max_samples: int = Field(4, ge=3, le=60, description="Max samples")
 
 
 class RouteResponse(BaseModel):
