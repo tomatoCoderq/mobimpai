@@ -1,3 +1,4 @@
+import logging
 import time
 from typing import Dict
 
@@ -5,9 +6,12 @@ from fastapi import APIRouter
 
 from algorithms.geo import sample_line
 from algorithms.osrm import osrm_route
+from mapillary import score_mapillary
 from model import score_tile
 from schemas import PassabilityRequest, RouteRequest, RouteResponse
 
+
+logger = logging.getLogger("uvicorn.error")
 
 router = APIRouter()
 
@@ -25,26 +29,45 @@ async def passability(payload: PassabilityRequest) -> Dict[str, float]:
 
 @router.post("/route", response_model=RouteResponse)
 async def route(payload: RouteRequest) -> RouteResponse:
-    start_time = time.perf_counter()
-    print(
-        f"/route start start={payload.start} end={payload.end} "
-        f"zoom={payload.zoom} grid={payload.grid_size}",
-        flush=True,
+    t_total = time.perf_counter()
+    logger.info(
+        "/route start start=%s end=%s zoom=%d",
+        payload.start, payload.end, payload.zoom,
     )
+
     coordinates, distance_m, duration_s = osrm_route(payload.start, payload.end)
     samples = sample_line(coordinates, payload.sample_distance, payload.max_samples)
 
     scored_samples = []
     response_nodes = []
-    for lng, lat in samples:
-        score = score_tile(lng, lat, payload.zoom)
-        scored_samples.append(score)
-        response_nodes.append({"lng": lng, "lat": lat, "passability": score})
+    mly_no_imagery = 0
+    fallback_used = 0
 
-    if not scored_samples:
-        avg_passability = 1.0
-    else:
-        avg_passability = round(sum(scored_samples) / len(scored_samples), 3)
+    for lng, lat in samples:
+        score, stats = score_mapillary(lng, lat, payload.zoom)
+        source = "mapillary"
+
+        if score is None:
+            mly_no_imagery += 1
+            score = score_tile(lng, lat, payload.zoom)
+            fallback_used += 1
+            source = "osm-fallback"
+            logger.info(
+                "/route MLY_MISS no imagery at lng=%s lat=%s, fallback score=%.3f",
+                lng, lat, score,
+            )
+        else:
+            logger.info(
+                "/route MLY score=%.3f cache=%s total=%sms",
+                score, stats["cache"], stats["total_ms"],
+            )
+
+        scored_samples.append(score)
+        response_nodes.append(
+            {"lng": lng, "lat": lat, "passability": score, "source": source}
+        )
+
+    avg_passability = round(sum(scored_samples) / len(scored_samples), 3) if scored_samples else 1.0
 
     geojson = {
         "type": "Feature",
@@ -52,19 +75,20 @@ async def route(payload: RouteRequest) -> RouteResponse:
         "properties": {"gridSize": payload.grid_size, "zoom": payload.zoom},
     }
 
-    stats = {
+    stats_out = {
         "avg_passability": avg_passability,
         "distance_m": round(distance_m, 1),
         "duration_s": round(duration_s, 1),
         "samples": len(samples),
         "scored_samples": len(scored_samples),
+        "mapillary_no_imagery": mly_no_imagery,
+        "fallback_used": fallback_used,
     }
 
-    total_time = time.perf_counter() - start_time
-    print(
-        f"/route done samples={stats['samples']} avg={stats['avg_passability']} "
-        f"total={total_time:.2f}s",
-        flush=True,
+    total_ms = round((time.perf_counter() - t_total) * 1000, 1)
+    logger.info(
+        "/route done avg=%.3f samples=%d fallback=%d total=%.1fms",
+        avg_passability, len(samples), fallback_used, total_ms,
     )
 
-    return RouteResponse(geojson=geojson, nodes=response_nodes, stats=stats)
+    return RouteResponse(geojson=geojson, nodes=response_nodes, stats=stats_out)

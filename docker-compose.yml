@@ -18,6 +18,7 @@ services:
       MODEL_PATH: /app/sidewalk_model.onnx
       TILE_SERVER_URL: https://tile.openstreetmap.org/{z}/{x}/{y}.png
       OSRM_BASE_URL: https://router.project-osrm.org
+      MAPILLARY_TOKEN: ${MAPILLARY_TOKEN}
     ports:
       - "8000:8000"
     restart: unless-stopped

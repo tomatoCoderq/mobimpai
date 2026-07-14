@@ -1,4 +1,4 @@
-FROM ultralytics/ultralytics:latest-python
+FROM python:3.11
 
 ENV PYTHONDONTWRITEBYTECODE=1 \
     PYTHONUNBUFFERED=1 \
@@ -9,11 +9,12 @@ WORKDIR /app/backend
 # Ultralytics image already has torch, torchvision, ultralytics, opencv, numpy.
 # Only install what's *not* included.
 COPY backend/requirements.txt ./requirements.txt
-RUN pip install --index-url https://pypi.tuna.tsinghua.edu.cn/simple \
+RUN pip install \
         fastapi==0.115.0 \
         uvicorn==0.30.6 \
         python-dotenv==1.0.1 \
-        onnx==1.17.0 \
+        requests==2.32.3 \
+        pillow==10.4.0 \
         onnxruntime==1.19.2
 
 COPY backend/ ./

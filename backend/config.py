@@ -13,6 +13,10 @@ TILE_SERVER_URL = os.getenv(
 )
 OSRM_BASE_URL = os.getenv("OSRM_BASE_URL", "https://router.project-osrm.org")
 
+MAPILLARY_TOKEN = os.getenv("MAPILLARY_TOKEN", "")
+MAPILLARY_BASE_URL = os.getenv("MAPILLARY_BASE_URL", "https://graph.mapillary.com")
+MAPILLARY_RADIUS_M = int(os.getenv("MAPILLARY_RADIUS_M", "50"))
+
 TILE_SIZE = 256
 IMAGE_SIZE = 512
 
